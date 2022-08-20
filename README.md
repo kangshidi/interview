@@ -31,3 +31,45 @@ fn.bind(obj, argument1, argument2, ...)(); // bind返回一个函数，并未执
 - 宏任务：定时器setTimeout，setInterval，事件监听
 - 微任务：promise.then
 - 同一个执行队列产生的微任务总是会在宏任务之前执行。
+
+
+### 6.获取数据类型（浏览器内置对象类型）
+```javascript
+Object.prototype.toString().call(obj);
+```
+### 7.解决跨域
+- 允许跨域的三个标签img link script
+- CORS(Cross Origin Resource Sharing)跨域资源共享
+  服务端设置Access-Control-Allow-Origin
+  简单请求：HEAD，GET，POST
+  Content-Type: application/x-www-form-urlencoded或者multipart/form-data或者text/plain
+  非简单请求：PUT，DELETE
+  Content-type: application/json
+  简单请求，浏览器会追加Origin字段。
+  非简单请求，浏览器会预先发送OPITONS请求，服务器返回Access-Control-Allow-Origin和Access-Control-Allow-Methods,
+  等待通过之后，浏览器再发送真是的请求，跟简单请求一样。
+
+### 8.Set和Map的区别
+Set类似数组，但成员的值都是唯一的，没有重复。
+```javascript
+const s = new Set([1, 2, 3,4]);
+[...set]
+```
+Map类似于对象，是键值对的集合，但是“键”的类型不限于字符串，各种类型的值（包括对象）都可以当作键。
+```javascript
+const map = new Map([
+  ['name', '张三'],
+  ['title', 'author']
+]);
+map.size // 2
+map.has('name') // true
+map.get('name') // 张三
+```
+
+### 9.回流和重绘
+DOM tree + CSSOM tree = render tree
+- render 树的一部分或者全部因为大小、位置、边距发生改变而需要重建的过程，叫做回流。
+- 比如颜色、背景发生改变，而不会引起布局的变化，叫做重绘。
+页面优化应该减少回流，比如一次性把css修改完，或者直接改变class名。
+不要循环追加元素到DOM树中，要把所有子元素全部添加到父元素上，最后只把一个父元素添加到DOM树中。
+不要频繁获取offset等位置信息，要存在变量中，以便下次使用。
