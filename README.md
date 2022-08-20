@@ -39,13 +39,13 @@ Object.prototype.toString().call(obj);
 ```
 ### 7.解决跨域
 - 允许跨域的三个标签img link script
-- CORS(Cross Origin Resource Sharing)跨域资源共享
-  服务端设置Access-Control-Allow-Origin
-  简单请求：HEAD，GET，POST
-  Content-Type: application/x-www-form-urlencoded或者multipart/form-data或者text/plain
-  非简单请求：PUT，DELETE
-  Content-type: application/json
-  简单请求，浏览器会追加Origin字段。
+- CORS(Cross Origin Resource Sharing)跨域资源共享  
+  服务端设置Access-Control-Allow-Origin  
+  简单请求：HEAD，GET，POST  
+  Content-Type: application/x-www-form-urlencoded或者multipart/form-data或者text/plain  
+  非简单请求：PUT，DELETE  
+  Content-type: application/json  
+  简单请求，浏览器会追加Origin字段。  
   非简单请求，浏览器会预先发送OPITONS请求，服务器返回Access-Control-Allow-Origin和Access-Control-Allow-Methods,
   等待通过之后，浏览器再发送真是的请求，跟简单请求一样。
 
