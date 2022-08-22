@@ -87,6 +87,69 @@ DOM tree + CSSOM tree = render tree
 每个实例都有一个属性__proto__指向原型对象。  
 原型对象也是一个对象，也有__proto__属性，就这样一直通过__proto__属性向上查找，这就是原型链。
 
+### 12.gzip压缩
+请求头中包含accept-encoding:gizp,响应头中包含content-encoding:gzip。
+
+### 13.CDN
+- CDN （Content Delivery Network）内容分发网络
+- 加快用户访问网络资源的速度和稳定性，减轻源服务器的压力。
+缓存服务器，负载均衡
+
+### 14.浏览器输入域名到页面静态资源完全加载的整个过程。
+1. 域名解析（浏览器缓存，hosts文件）
+2. TCP连接
+3. HTTP请求
+4. 服务器响应
+5. 客户端渲染
+- 页面从上到下执行，遇到CSS和JavaScript会阻塞渲染。
+- async 异步加载，不阻塞浏览器动作，加载完立即执行，不依赖DOM元素或者其他js的时候可以使用。
+- defer 异步加载，不阻塞浏览器动作，等到DOM元素加载完成之后执行。
+
+### 15.强缓存和协商缓存
+- 强缓存：服务器响应头中给expires字段或者cache-control字段设置资源过期时间，浏览器判断如果请求的时间在过期时间之前，则直接使用本地缓存。
+- 协商缓存：由服务器决定缓存资源是否可用。响应头中给Last-Modified字段设置资源最后修改的时间，浏览器下一次访问服务器的时候，在请求头中设置If-Modified-Since字段，值为上一次请求时的Last-Modified的值。服务器判断这两个时间是否有变化，如果没有变化，则返回304（not modified）状态码，告诉浏览器可以从本地缓存中获取资源；如果值有变化，则返回服务器上面最新的资源，并且响应头中会更新Last-Modified的值。
+- Etag/If-Match，If-None-Match的处理逻辑与Last-Modified类似。Etag更精确，Last-Modified无法响应秒级别的变化。
+
+### 16.0.1 + 0.2 != 0.3背后的原理
+js采用64位双精度浮点数，二进制存储。浮点数小数位的限制截断的二进制，再转化为十进制，就会有误差。
+
+### 17.图片懒加载
+判断图片是否在可视区域内，如果在的话设置src属性。
+可视区域的高度：
+```javascript
+document.documentElement.clientHeight/window.innerHeight
+```
+图片相对于视口的位置：
+```javascript
+imgElement.getBoundingClientRect();
+```
+如果bound.top <= clientHeight，说明图片已经进入可视区域内。
+
+### 18.HTTP状态码
+- 200 OK
+- 500 internel server error
+- 400 bad request
+- 403 forbidden
+- 404 page not found
+- 405 method not allowed
+- 304 not modified
+
+### 19.CSS选择器的优先级
+1. !important
+2. style写在元素标签内（行内样式）
+3. id选择器
+4. 类选择器
+5. 标签名选择器
+6. 通配符选择器
+7. 继承
+8. 浏览器默认属性
+
+### 20.delete删除数组元素，数组长度会改变吗？
+不会改变，只是把相应索引的值设成了undefined。
+
+
+
+
 
 
 
