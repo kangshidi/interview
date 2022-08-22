@@ -1,5 +1,5 @@
 /* 
- * 节流 单位时间执行一次
+ * 节流 单位时间内只执行一次。
  */
 function throttle(fn, timeout = 1000) {
   let timer;
