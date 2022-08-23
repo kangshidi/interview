@@ -170,7 +170,31 @@ Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有 Sym
 Reflect.ownKeys返回一个数组，包含对象自身的（不含继承的）所有键名，不管键名是 Symbol 或字符串，也不管是否可枚举。
 
 
+# Vue部分
+### 1.MVVM
+MVVM表示的是Model-View-ViewModel
+- Model：模型层，负责处理业务逻辑以及和服务端进行交互
+- View：视图层，负责将数据模型转化为UI展示出来
+- ViewModel：视图模型层，用来连接Model和View，是Model和View之间的通信桥梁
 
+### 2.vue2中的双向数据绑定如何实现？有什么缺点？vue3是如何改进的？
+vue2
+- 视图更新模型：事件监听。
+- 模型更新视图：数据劫持。Object.definedPrototy中定义set函数，更新视图。
+缺点：
+1. 递归遍历所有对象的属性，耗费性能。
+2. 只能应用在对象上，不能用于数组。
+3. 只能够监听定义时的属性，不能监听新加的或者删除的属性，所以要使用vue.set。
+vue3
+使用Proxy（整个对象的“拦截器”）和Reflect实现。
+
+### 3.SPA实现原理
+SPA single page application 单页面应用
+不刷新整个页面来实现页面跳转，提高用户体验。
+1. 使用history的api（pushState，replaceState等），监听popstate事件。
+2. 使用hash，监听hashchange事件。
+
+### 4.
 
 
 
