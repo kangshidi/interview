@@ -216,8 +216,8 @@ SPA single page application 单页面应用
 1. computed能完成的功能，watch都可以完成。
 2. watch能完成的功能，computed不一定能完成，例如：watch可以进行异步操作。<br>
 两个重要的小原则：
-1. 所被Vue管理的函数，最好写成普通函数，这样this的指向才是vm或者组件实例对象。
-2. 所有不被Vue管理的函数（定时器的回调函数、ajax的回调函数、promise的回调函数），最好写成箭头函数，这样this的指向才是vm或者组件实例对象。
+- 所被Vue管理的函数，最好写成普通函数，这样this的指向才是vm或者组件实例对象。
+- 所有不被Vue管理的函数（定时器的回调函数、ajax的回调函数、promise的回调函数），最好写成箭头函数，这样this的指向才是vm或者组件实例对象。
 
 ### 7.Vue、React中的key有什么作用？（key的内部原理）
 1. 虚拟DOM中key的作用： <br>
