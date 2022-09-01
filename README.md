@@ -256,6 +256,74 @@ key是虚拟DOM对象的标识，当数据发生变化时，Vue会根据【新�
 - 指令定义时不加v-，但使用时要加v-。
 - 指令如果是多个单词，要使用kebab-case命名方式，不要用camelCase命名。
 
+### 12.组件中的data为什么必须写成函数？
+避免组件被复用时，数据存在引用关系。
+
+### 13.一个重要的内置关系
+```javascript
+VueComponent.prototype.__proto__ === Vue.prototype
+```
+原因：让组件实例对象（vc）可以访问到Vue原型上的属性、方法。
+
+### 14.ref属性
+1. 被用来给元素或子组件注册引用信息（id的替代者）。
+2. 应用在html标签上获取的是真实DOM元素，应用在组件标签上是组件实例对象（vc）。
+3. 使用方式：<br>
+打标识：
+```javascript
+<h1 ref="xxx">......</h1>
+```
+或者
+```javascript
+<School ref="xxx"/>
+```
+获取：
+```javascript
+this.$refs.xxx
+```
+
+### 15.props配置项
+props是只读的，Vue底层会监测你对props的修改，如果进行了修改，就会发出警告，若业务需求确实需要修改，那么请复制一份props的内容到data中，然后去修改data中的数据。
+
+### 16.mixin（混入）
+功能：可以把多个组件共用的配置项提取成一个混入对象。<br>
+使用方式：<br>
+第一步定义混入(.js文件)，例如：
+```javascript
+export const xxx = {
+  data() {...},
+  methods: {...}
+}
+```
+第二步使用混入，例如：
+1. 全局混入：Vue.mixin(xxx)
+2. 局部混入：配置项mixins:['xxx']
+
+### 17.自定义hook（Vue3）
+hook本质是一个函数，把setup函数中使用的Composition API进行了封装。<br>
+类似于Vue2中的mixin。<br>
+优势：复用代码，让setup中的逻辑更清楚易懂。
+
+### 18.插件
+功能：用于增强Vue。<br>
+本质：包含install函数的对象，install函数的第一个参数是Vue，第二个以后的参数是插件使用者传递的数据。<br>
+定义插件(pluginName.js文件)：
+```javascript
+export default {
+  install(Vue) { //Vue自动调用
+    Vue.filter('xxx', function(value) {...})
+    Vue.directive('xxx', {...})
+    Vue.mixin({...})
+    Vue.prototype.myFunc = () => {}
+    ...
+  }
+}
+```
+使用插件：在vm创建之前
+```javascript
+Vue.use(pluginName)
+```
+
 
 
 
