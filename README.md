@@ -361,7 +361,7 @@ mounted() {
 若想让事件只触发一次，可以使用.once修饰符，或者$once()方法。   
 3. 触发自定义事件： this.$emit('customEventName', data)。    
 4. 解绑自定义事件： this.$off('customEventName')。    
-5. 组件上也可以绑定原声DOM事件，需要使用.native修饰符。    
+5. 组件上也可以绑定原生DOM事件，需要使用.native修饰符。    
 6. 注意：通过this.$refs.xxx.$on('customEventName', this.callbackFunc)绑定自定义事件时，回调函数要么定义在methods中，要么使用箭头函数，否则this指向会出问题！   
 
 
