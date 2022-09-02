@@ -427,7 +427,7 @@ this.pId = pubsub.publish('messageName', data)
 ......
 beforeDestory() {
   // 取消订阅
-  pubsub.unsubscribe(pId)
+  pubsub.unsubscribe(this.pId)
 }
 ......
 ```
