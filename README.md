@@ -364,6 +364,74 @@ mounted() {
 5. 组件上也可以绑定原生DOM事件，需要使用.native修饰符。    
 6. 注意：通过this.$refs.xxx.$on('customEventName', this.callbackFunc)绑定自定义事件时，回调函数要么定义在methods中，要么使用箭头函数，否则this指向会出问题（会指向触发该事件的VueComponent）！   
 
+### 20.全局事件总线（GlobalEventBus）
+1. 一种组件间通信方式，适用于 **任意组件间通信**。
+2. 安装全局事件总线：
+```javascript
+new Vue({
+  ......
+  beforeCreate() {
+    Vue.prototype.$bus = this; // 安装全局事件总线，$bus就是当前应用的vm
+  },
+  ......
+})
+```
+3. 使用事件总线：<br>
+(1)接收数据方：A组件想接受数据，则在A组件中给$bus绑定自定义事件，**事件的回调函数留在A组件本身**。
+```javascript
+......
+mounted(){
+  this.$bus.$on('customEventName', (data) => { // 要么使用箭头函数，要么使用methods中定义的方法。
+    ...... // 事件回调要做的事
+  })
+}
+......
+```
+(2)提供数据方：
+```javascript
+this.$bus.$emit('customEventName', data)
+```
+4. 最好在接收数据方的beforeDestory钩子中，用$off解绑当前组件所用到的事件。
+```javascript
+......
+beforeDestory(){
+  this.$bus.$off('customEventName') // 一定要指定事件名称，否则所有$bus上的事件都被解绑了！
+}
+......
+```
+
+### 21.消息订阅与发布(pubsub)
+1. 一种组件间通信方式，适用于**任意组件间通信**。
+2. 使用步骤: <br>
+（1）安装pubsub： npm i pubsub-js <br>
+（2）引入pubsub: import pubsub from 'pubsub-js' <br>
+（3）接收数据方：A组件想要接收数据，则在A组件中订阅消息，**订阅的回调函数留在A组件自身**。
+```javascript
+......
+mounted() {
+  // 订阅消息
+  pubsub.subscribe('messageName', (messageName, data) => { // 要么使用箭头函数，要么使用methods中定义的方法。
+    ...... // 事件回调要做的事
+  })
+}
+......
+```
+（4）提供数据方：
+```javascript
+// 发布消息
+this.pId = pubsub.publish('messageName', data)
+```
+（5）最好在接收数据方的beforeDestory钩子中，取消订阅。
+
+```javascript
+......
+beforeDestory() {
+  // 取消订阅
+  pubsub.unsubscribe(pId)
+}
+......
+```
+
 
 
 
