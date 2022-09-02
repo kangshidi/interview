@@ -344,7 +344,7 @@ Vue.use(pluginName)
 ```
 
 ### 19.组件自定义事件
-1. 一种组件间通信方式，适用于 <span style="color: orangered;">子组件 ===> 父组件。</span>
+1. 一种组件间通信方式，适用于 <span style="color: rgb(255, 0, 0);">子组件 ===> 父组件。</span>
 2. 绑定自定义事件。<br>
 第一种方式：在父组件中，<Child @customEventName="callbackFunc"/> 或者 <Child v-on:customEventName="callbackFunc"/><br>
 第二种方式：在父组件中：
