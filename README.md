@@ -360,6 +360,7 @@ mounted() {
 4. 解绑自定义事件： this.$off('customEventName')
 5. 组件上也可以绑定原声DOM事件，需要使用.native修饰符。
 6. 注意：通过this.$refs.xxx.$on('customEventName', this.callbackFunc)绑定自定义事件时，回调函数要么定义在methods中，要么使用箭头函数，否则this指向会出问题！
+7. <span style="display:block;text-align:right;color:orangered;">橙色居右</span>
 
 
 
