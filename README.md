@@ -168,6 +168,25 @@ Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有 Sym
 
 Reflect.ownKeys返回一个数组，包含对象自身的（不含继承的）所有键名，不管键名是 Symbol 或字符串，也不管是否可枚举。
 
+### 22.webStorage
+1. 存储内容大小一般支持5M左右（不同浏览器可能不一样）
+2. 浏览器通过window.sessionStorage和window.localStorage属性来实现本地存储机制。
+3. 相关api如下：
+```javascript
+localStorage.setItem('key', 'value');
+sessionStorage.setItem('key', 'value');
+localStorage.getItem('key');
+sessionStorage.getItem('key');
+localStorage.removeItem('key');
+sessionStorage.removeItem('key');
+localStorage.clear();
+sessionStorage.clear();
+```
+4. 备注：
+- sessionStorage存储的内容会随着浏览器窗口关闭而消失。
+- localStorage存储的内容，需要手动清除才会消失。
+- getItem('key')对应的value如果获取不到，返回值则为null。
+- JSON.parse(null)的结果依然是null。
 
 # Vue部分
 ### 1.MVVM
