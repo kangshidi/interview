@@ -344,7 +344,7 @@ Vue.use(pluginName)
 ```
 
 ### 19.组件自定义事件
-1. 一种组件间通信方式，适用于 <span style="color: rgb(255, 0, 0);">子组件 ===> 父组件。</span>
+1. 一种组件间通信方式，适用于 <span style="color: red;">子组件 ===> 父组件。</span>
 2. 绑定自定义事件。<br>
 第一种方式：在父组件中，<Child @customEventName="callbackFunc"/> 或者 <Child v-on:customEventName="callbackFunc"/><br>
 第二种方式：在父组件中：
@@ -360,7 +360,6 @@ mounted() {
 4. 解绑自定义事件： this.$off('customEventName')
 5. 组件上也可以绑定原声DOM事件，需要使用.native修饰符。
 6. 注意：通过this.$refs.xxx.$on('customEventName', this.callbackFunc)绑定自定义事件时，回调函数要么定义在methods中，要么使用箭头函数，否则this指向会出问题！
-7. <span style="display:block;text-align:right;color:orangered;">橙色居右</span>
 
 
 
