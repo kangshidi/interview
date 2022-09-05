@@ -432,6 +432,143 @@ beforeDestory() {
 ......
 ```
 
+### 22.this.$nextTick(回调函数)
+1. 作用：在下一次DOM更新结束后执行其指定的回调。
+2. 什么时候用：当改变数据后，要基于更新后的新DOM进行某些操作时，要在$nextTick所指定的回调函数中执行。
+
+### 23.Vue封装的过渡与动画
+1. 作用：在插入、更新或删除DOM元素时，在合适的时候给元素添加样式类名。
+2. 写法：<br>
+（1）准备好样式：<br>
+元素进入时的样式：
+- v-enter：进入的起点
+- v-enter-active：进入过程中
+- v-enter-to：进入的终点<br>
+元素离开时的样式：
+- v-leave：离开时的起点
+- v-leave-active：离开过程中
+- v-leave-to：离开时的终点<br>
+（2）使用<transition>包裹要过渡的元素，并配置name属性：
+```javascript
+<transition name="hello" appear>
+  <h1 v-show=“isShow”>你好</h1>
+</transition>
+```
+（3）备注：若有多个元素需要过渡，则需要使用<transition-group>标签，且每个元素都要指定key值。
+
+### 24.Vue脚手架配置代理，在前端解决跨域
+编写vue.config.js文件，配置具体如下：
+```javascript
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api1': { // 匹配所有以‘/api1’开头的请求路径
+        target: 'http://localhost:5000', // 代理目标的基础路径
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api1': ''
+        }
+      },
+      '/api2': { // 匹配所有以‘/api2’开头的请求路径
+        target: 'http://localhost:5001', // 代理目标的基础路径
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api2': ''
+        }
+      }
+    }
+  }
+}
+// changeOrigin设置为true时，服务器收到的请求头中host为：localhost:5000
+// changeOrigin设置为false时，服务器收到的请求头中host为：localhost:8080
+// changeOrigin默认值为true
+```
+真正发请求的地址要写成本地的代理服务器地址8080：
+```javascript
+axios.get('http://localhost:8080/api1/interfaceName').then(response => {
+  console.log(response.data);
+}, error => {
+  console.log(error.message);
+})
+```
+
+### 25.插槽
+1. 作用：让父组件可以向子组件指定位置插入html结构，也是一种组件间通信方式，适用于**父组件 ==> 子组件**。
+2. 分类：默认插槽、具名插槽、作用域插槽。
+3. 使用方式：<br>
+（1）默认插槽：
+```javascript
+// 父组件中：
+<Child>
+  <div>html结构</div>
+</Child>
+
+// 子组件中：
+<div>
+  <!-- 定义插槽 -->
+  <slot>插槽默认内容</slot>
+</div>
+```
+（2）具名插槽：
+```javascript
+// 父组件中：
+<Child>
+  <template slot="name1">
+    <div>html结构111</div>
+  </template>
+  <template v-slot:name2>
+    <div>html结构222</div>
+  </template>
+</Child>
+
+// 子组件中：
+<div>
+  <!-- 定义插槽 -->
+  <slot name="name1">插槽默认内容111</slot>
+  <slot name="name2">插槽默认内容222</slot>
+</div>
+```
+（3）作用域插槽：<br>
+理解：数据在子组件自身，但数据生成的结构需要组件的使用者来决定。<br>
+```javascript
+// 父组件中：
+<Child>
+  <template scope="data">
+    <div>{{data.title}}</div>
+    <div v-for="(item,index) in data.list" :key="index">{{item}}</div>
+  </template>
+</Child>
+<Child>
+  <template slot-scope="data">
+    <h3>{{data.title}}</h3>
+    <ul>
+      <li v-for="(item,index) in data.list" :key="index">{{item}}</li>
+    </ul>
+  </template>
+</Child>
+
+// 子组件中：
+<template>
+  <div>
+    <!-- 定义插槽 -->
+    <slot :list="list" :title="title">插槽默认内容</slot>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Child",
+  data() {
+    // 数据在子组件自身
+    return {
+      title: 'xxx',
+      list: ['a', 'b', 'c']
+    }
+  }
+}
+</script>
+```
+
 
 
 
