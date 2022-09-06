@@ -643,7 +643,7 @@ export default new Vuex.Store({
 ```
 （2）组件中读取vuex中的数据：this.$store.state.sum <br>
 （3）组件中修改vuex中的数据：this.$store.dispatch('add', data)或this.$store.commit('ADD',data) <br>
-备注：若没有网络请求或者其他业务逻辑，组件中可以越过actions，即不写dispatch，直接使用commit。
+备注：若没有网络请求或者其他业务逻辑，组件中可以越过actions，即不写dispatch，直接使用commit。 <br>
 5. getters的使用 <br>
 （1）概念：当state中的数据需要经过加工后再使用时，使用getters加工。<br>
 （2）在store.js中追加getters配置项
