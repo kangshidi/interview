@@ -570,6 +570,222 @@ export default {
 ```
 
 
+### 26.Vuex
+1. 概念：在Vue中实现集中式状态（数据）管理的一个vue插件，对vue应用中多个组件的共享状态进行集中式的管理（读/写），也是一种组件间通信方式，且适用于**任意组件间通信**。
+2. 何时使用？<br>
+多个组件需要共享数据时。
+3. 搭建vuex环境<br>
+（1）创建文件：src/store/index.js
+```javascript
+import Vue from 'vue'
+import Vuex from 'vuex'
+// 应用vuex插件
+Vue.use(Vuex)
+
+// 准备actions对象--响应组件中用户的动作
+conat actions = {}
+// 准备mutations对象--修改state中的数据
+conat mutations = {}
+// 准备state对象--保存具体的数据
+conat state = {}
+
+// 创建并暴露store
+export default new Vuex.Store({
+  actions,
+  mutations,
+  state
+})
+```
+（2）在main.js文件中创建vm时传入store配置项
+```javascript
+import store from './store'
+
+new Vue({
+  el: '#app',
+  render: h => h(App),
+  store
+})
+```
+4. 基本使用<br>
+（1）初始化数据、配置actions、配置mutations、操作文件store.js
+```javascript
+import Vue from 'vue'
+import Vuex from 'vuex'
+// 应用vuex插件
+Vue.use(Vuex)
+
+// 准备actions对象--响应组件中用户的动作
+conat actions = {
+  // 响应组件中‘加’的动作
+  add(context, value) { // context相当于一个小型的store
+    // todo：一些校验和业务逻辑
+    context.commit('ADD',value)
+  }
+}
+// 准备mutations对象--修改state中的数据
+conat mutations = {
+  // 执行‘加’
+  ADD(state, value) {
+    state.sum += value
+  }
+}
+// 准备state对象--保存具体的数据
+conat state = {
+  sum: 0
+}
+
+// 创建并暴露store
+export default new Vuex.Store({
+  actions,
+  mutations,
+  state
+})
+```
+（2）组件中读取vuex中的数据：this.$store.state.sum <br>
+（3）组件中修改vuex中的数据：this.$store.dispatch('add', data)或this.$store.commit('ADD',data) <br>
+备注：若没有网络请求或者其他业务逻辑，组件中可以越过actions，即不写dispatch，直接使用commit。
+5. getters的使用 <br>
+（1）概念：当state中的数据需要经过加工后再使用时，使用getters加工。<br>
+（2）在store.js中追加getters配置项
+```javascript
+······
+const getters = {
+  bigSum(state) { // 类似于计算属性
+    return state.sum * 10
+  }
+}
+
+// 创建并暴露store
+export default new Vuex.Store({
+  actions,
+  mutations,
+  state,
+  getters // 追加getters配置项
+})
+
+```
+（3）在组件中读取数据：this.$store.getters.bigSum <br>
+6. mapState、mapGetters、mapActions、mapMutations的使用 <br>
+（1）mapState方法：用于帮助我们映射**state**中的数据为计算属性，这样html中就不需要一直写$store.state.xxx，直接使用{{xxx}}即可。
+```javascript
+import {mapState} from vuex;
+
+computed: {
+  // 借助mapState生成计算属性（对象写法），计算属性的名字为：he、xuexiao、xueke
+  ...mapState({he: 'sum',xuexiao: 'school', xueke: 'subject'})
+
+  // 借助mapState生成计算属性（数组写法），计算属性的名字为：sum、school、subject
+  ...mapState(['sum','school','subject'])
+},
+```
+（2）mapGetters方法：用于帮助我们映射**getters**中的数据为计算属性，这样html中就不需要一直写$store.getters.xxx，直接使用{{xxx}}即可。
+```javascript
+import {mapGetters} from vuex;
+
+computed: {
+  // 借助mapGetters生成计算属性（对象写法），计算属性的名字为：bigSum
+  ...mapGetters({bigSum: 'bigSum'})
+
+  // 借助mapGetters生成计算属性（数组写法），计算属性的名字为：bigSum
+  ...mapGetters(['bigSum'])
+},
+```
+ (3）mapActions方法用于帮助我们生成与actions对话的方法，即：包含$store.dispatch("xxx")的函数。
+ ```javascript
+import {mapActions} from vuex;
+
+methods: {
+  // 借助mapActions生成方法：increment、decrement（对象形式）
+  ...mapActions({increment: 'add', decrement: 'minus'})
+
+  // 借助mapActions生成方法：add、minus（数组形式）
+  ...mapActions(['add', 'minus'])
+}
+// 注意：调用increment、decrement、add、minus时，查看是否需要传参。
+ ```
+  (4）mapMutations方法用于帮助我们生成与mutations对话的方法，即：包含$store.commit("XXX")的函数。
+ ```javascript
+import {mapMutations} from vuex;
+
+methods: {
+  // 借助mapMutations生成方法：increment、decrement（对象形式）
+  ...mapMutations({increment: 'ADD', decrement: 'MINUS'})
+
+  // 借助mapMutations生成方法：ADD、MINUS（数组形式）
+  ...mapMutations(['ADD', 'MINUS'])
+}
+// 注意：调用increment、decrement、ADD、MINUS时，查看是否需要传参。
+ ```
+7. 模块化+命名空间 <br>
+（1）目的：数据分类，更好维护，并解决命名冲突。<br>
+（2）修改 store.js
+```javascript
+const countAbout = {
+  namespaced: true, // 开启命名空间
+  state: {
+    sum: 0,
+    school: '西北大学',
+    subject: '软件工程'
+  },
+  mutations: {···},
+  actions: {···},
+  getters: {
+    bigSum(state) {
+      return state.sum * 10
+    }
+  }
+}
+
+const personAbout = {
+  namespaced: true, // 开启命名空间
+  state: {
+    personList: [{
+      id: '001',
+      name: 'test'
+    }]
+  },
+  mutations: {···},
+  actions: {···},
+  getters: {···}
+}
+
+export default new Vuex.Store({
+  modules: {
+    countAbout,
+    personAbout
+  }
+})
+```
+（3）开启命名空间后，组件中读取state数据。<br>
+```javascript
+// 方式一：直接读取
+this.$store.state.personAbout.personList
+// 方式二：借助mapState读取
+...mapState('countAbout', ['sum', 'school', 'subject'])
+```
+（4）开启命名空间后，组件中读取getters数据。<br>
+```javascript
+// 方式一：直接读取
+this.$store.getters['personAbout/xxx']
+// 方式二：借助mapGetters读取
+...mapGetters('countAbout', ['bigSum'])
+```
+（4）开启命名空间后，组件中调用dispatch。<br>
+```javascript
+// 方式一：直接调用
+this.$store.dispatch('personAbout/xxx', data)
+// 方式二：借助mapActions
+...mapActions('countAbout', ['add'])
+```
+（5）开启命名空间后，组件中调用commit。<br>
+```javascript
+// 方式一：直接调用
+this.$store.commit('personAbout/xxx', data)
+// 方式二：借助mapMutations
+...mapMutations('countAbout', ['addOdd'])
+```
+
+
 
 
 
