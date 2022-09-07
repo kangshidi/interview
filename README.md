@@ -985,7 +985,7 @@ this.$route.params.id;
 this.$route.params.title;
 ```
 6. 路由的props配置。 <br>
-作用： 让路由组件更方面的收到参数，不需要写很多$route.params或者$route.query。
+作用： 让路由组件更方面的收到参数，不需要写很多`$route.params.xxx`或者`$route.query.xxx`，直接在页面上引用具体的属性名（id、title）即可。
 ```javascript
 {
   name: 'xiangqing',
