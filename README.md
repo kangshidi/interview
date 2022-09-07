@@ -964,7 +964,7 @@ routes: [
 ]
 ```
 （2）传递参数。
-```javascript
+```html
 <!-- 跳转并携带params参数：to的字符串写法 -->
 <router-link :to="`/home/message/detail/${m.id}/${m.title}`">跳转</router-link>
 
