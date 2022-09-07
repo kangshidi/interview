@@ -829,12 +829,12 @@ new Vue({
 })
 ```
 （5）实现切换路由
-```javascript
+```html
 <router-link active-class="active" to="/about">Aboue</router-link>
 <router-link active-class="active" to="/home">Home</router-link>
 ```
 （6）指定组件的展示位置
-```javascript
+```html
 <router-view></router-view>
 ```
 2. 多级（嵌套）路由 <br>
@@ -862,13 +862,13 @@ new Vue({
   ]
 ```
 （2）页面跳转时，要写**完整路径**：
-```javascript
+```html
 <router-link active-class="active" to="/home/news">News</router-link>
 <router-link active-class="active" to="/home/message">Message</router-link>
 ```
 3. 路由的query参数 <br>
 （1）传递参数
-```javascript
+```html
 <!-- 跳转并携带query参数：to的字符串写法 -->
 <router-link :to="`/home/message/detail?id=${m.id}&title=${m.title}`">跳转</router-link>
 
@@ -918,7 +918,7 @@ this.$route.query.title;
   ]
 ```
 简化跳转
-```javascript
+```html
 <!-- 简化前 -->
 <router-link to="/home/message/detail">跳转</router-link>
 
@@ -1007,10 +1007,10 @@ this.$route.params.title;
   },
 }
 ```
-7. <router-link>的replace属性 <br>
+7.`<router-link>`的replace属性 <br>
 （1）作用：控制路由跳转时操作**浏览器历史记录**的模式。 <br>
 （2）浏览器的历史记录有两种写入方式：分别为**push**和**replace**。push是追加历史记录；replace是替换**当前记录**。默认为push。 <br>
-（3）如何开启replace模式：<router-link replace to="/about">跳转</router-link> <br>
+（3）如何开启replace模式：`<router-link replace to="/about">跳转</router-link>` <br>
 
 8. 编程式路由导航，不借助<router-link>实现路由跳转，让路由跳转更加灵活。 <br>
 ```javascript
@@ -1041,7 +1041,7 @@ this.$router.go(3)
 ```
 
 9. 缓存路由组件：让不展示的组件保持挂载，不被销毁。 <br>
-```javascript
+```html
 <keep-alive :include="['要缓存的组件名1', '要缓存的组件名2']">
   <router-view></router-view>
 </keep-alive>
