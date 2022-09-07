@@ -785,6 +785,330 @@ this.$store.commit('personAbout/xxx', data)
 ...mapMutations('countAbout', ['addOdd'])
 ```
 
+### 27.vue路由
+1. 基本使用 <br>
+（1）安装vue-router，命令：npm i vue-router <br>
+（2）应用插件：Vue.use(VueRouter) <br>
+（3）编写router配置项：router文件夹下，index.js文件
+```javascript
+// 引入VueRouter
+import VueRouter from 'vue-router'
+
+// 引入组件
+import About from '../components/About'
+import Home from '../components/Home'
+
+// 创建并暴露VueRouter
+export default new VueRouter({
+  routes: [
+    {
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/home',
+      component: Home
+    },
+  ]
+})
+```
+（4）在vm中添加router配置项：main.js文件
+```javascript
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+// 引入router
+import router from './router/index.js'
+
+// 应用VueRouter
+Vue.use(VueRouter)
+
+new Vue({
+  el: '#app',
+  render: h => h(App),
+  router // router配置项
+})
+```
+（5）实现切换路由
+```javascript
+<router-link active-class="active" to="/about">Aboue</router-link>
+<router-link active-class="active" to="/home">Home</router-link>
+```
+（6）指定组件的展示位置
+```javascript
+<router-view></router-view>
+```
+2. 多级（嵌套）路由 <br>
+（1）配置路由规则，使用**children配置项**：
+```javascript
+  routes: [
+    {
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/home',
+      component: Home,
+      children: [ // 通过children配置子路由
+        {
+          path: 'news', // 此处一定不要写： /news
+          component: News,
+        },
+        {
+          path: 'message', // 此处一定不要写： /message
+          component: Message,
+        },
+      ]
+    },
+  ]
+```
+（2）页面跳转时，要写**完整路径**：
+```javascript
+<router-link active-class="active" to="/home/news">News</router-link>
+<router-link active-class="active" to="/home/message">Message</router-link>
+```
+3. 路由的query参数 <br>
+（1）传递参数
+```javascript
+<!-- 跳转并携带query参数：to的字符串写法 -->
+<router-link :to="`/home/message/detail?id=${m.id}&title=${m.title}`">跳转</router-link>
+
+<!-- 跳转并携带query参数：to的对象写法 -->
+<router-link :to="{
+  path: '/home/message/detail', // 备注：实际路由的配置文件中，并没有体现传递的参数。
+  query: {
+    id: m.id,
+    title: m.title
+  }
+}">
+  跳转
+</router-link>
+```
+（2）接收参数
+```javascript
+this.$route.query.id;
+this.$route.query.title;
+```
+4. 命名路由 <br>
+（1）作用：简化路由的跳转。 <br>
+（2）如何使用： <br>
+给路由起名字
+```javascript
+  routes: [
+    {
+      path: '/home',
+      component: Home,
+      children: [
+        {
+          path: 'news',
+          component: News,
+        },
+        {
+          path: 'message',
+          component: Message,
+          children: [ // 三级路由
+            {
+              name: 'xiangqing', // 路由起名
+              path: 'detail',
+              component: Detail
+            }
+          ]
+        },
+      ]
+    },
+  ]
+```
+简化跳转
+```javascript
+<!-- 简化前 -->
+<router-link to="/home/message/detail">跳转</router-link>
+
+<!-- 简化后 -->
+<router-link :to="{name: 'xiangqing'}">跳转</router-link>
+
+<!-- 简化后（带query参数） -->
+<router-link :to="{
+  name: 'xiangqing',
+  query: {
+    id: m.id,
+    title: m.title
+  }
+}">
+  跳转
+</router-link>
+```
+5. 路由的params参数 <br>
+（1）配置路由，声明接收params参数。
+```javascript
+routes: [
+  {
+    path: '/home',
+    component: Home,
+    children: [
+      {
+        path: 'news',
+        component: News,
+      },
+      {
+        path: 'message',
+        component: Message,
+        children: [
+          {
+            name: 'xiangqing',
+            path: 'detail/:id/:title', // 使用占位符声明接收params参数
+            component: Detail
+          }
+        ]
+      },
+    ]
+  },
+]
+```
+（2）传递参数。
+```javascript
+<!-- 跳转并携带params参数：to的字符串写法 -->
+<router-link :to="`/home/message/detail/${m.id}/${m.title}`">跳转</router-link>
+
+<!-- 跳转并携带params参数：to的对象写法 -->
+<router-link :to="{
+  name: 'xiangqing', // 路由携带params参数时，此处必须使用name，不能使用path
+  params: { // params配置项
+    id: m.id,
+    title: m.title
+  }
+}">
+  跳转
+</router-link>
+```
+（3）接收参数。
+```javascript
+this.$route.params.id;
+this.$route.params.title;
+```
+6. 路由的props配置。 <br>
+作用： 让路由组件更方面的收到参数，不需要写很多$route.params或者$route.query。
+```javascript
+{
+  name: 'xiangqing',
+  path: 'detail/:id/:title',
+  component: Detail,
+
+  // props第一种写法，值为对象，该对象中所有的key-value组合最终都会通过props形式传递Detail组件。
+  props: {id: 666,title: 'hello'},
+
+  // props第二种写法，值为布尔值，true:把路由收到的所有**params**参数通过props形式传递给Detail组件。
+  props: true,
+
+  // props第三种写法，值为函数，该函数返回的对象中每一组key-value都会通过props形式传递Detail组件。
+  props(route) {
+    return {
+      id: route.query.id,
+      title: route.query.title,
+    }
+  },
+}
+```
+7. <router-link>的replace属性 <br>
+（1）作用：控制路由跳转时操作**浏览器历史记录**的模式。 <br>
+（2）浏览器的历史记录有两种写入方式：分别为**push**和**replace**。push是追加历史记录；replace是替换**当前记录**。默认为push。 <br>
+（3）如何开启replace模式：<router-link replace to="/about">跳转</router-link> <br>
+
+8. 编程式路由导航，不借助<router-link>实现路由跳转，让路由跳转更加灵活。 <br>
+```javascript
+// push跳转
+this.$router.push({
+  name: 'xiangqing',
+  params: {
+    id: xxx,
+    title: xxx,
+  }
+})
+
+// replace跳转
+this.$router.replace({
+  name: 'xiangqing',
+  params: {
+    id: xxx,
+    title: xxx,
+  }
+})
+
+// 前进一步
+this.$router.foward()
+// 后退一步
+this.$router.back()
+// 前进或者后退几步由参数决定
+this.$router.go(3)
+```
+
+9. 缓存路由组件：让不展示的组件保持挂载，不被销毁。 <br>
+```javascript
+<keep-alive :include="['要缓存的组件名1', '要缓存的组件名2']">
+  <router-view></router-view>
+</keep-alive>
+```
+
+10. 两个新的生命周期钩子 <br>
+（1）作用：路由组件独有的两个钩子，用于捕获路由组件的激活状态。 <br>
+（2）具体名字：
+```javascript
+// 路由组件被激活时触发
+activated() {
+  ···
+},
+// 路由组件失活时触发
+deactivated() {
+  ···
+}
+```
+
+11. 路由守卫 <br>
+（1）作用：对路由进行**权限控制**。 <br>
+（2）分类：全局守卫、独享守卫、组件内守卫。 <br>
+（3）全局守卫：router/index.js文件
+```javascript
+// 全局前置守卫：初始化的时候执行、每次路由切换之前执行
+router.beforeEach((to, from, next) => {
+  if (to.meta.isAuth) { // 判断to的路由是否需要权限控制，isAuth是用户自定义的属性
+    if (localStorage.getItem('school') === 'xibeidaxue') { // 权限控制具体规则，也可将school放在vuex中管理。
+      next() // 放行
+    } else {
+      alert('无权限')
+    }
+  } else {
+    next() // 放行
+  }
+})
+
+// 全局后置守卫：初始化的时候执行、每次路由切换之后执行
+router.afterEach((to, from) => {
+  document.title = to.meta.title || 'default' // 修改网页的title
+})
+```
+（4）独享守卫：router/index.js文件
+```javascript
+// 在某一个具体的路由配置中追加一个配置项beforeEnter，使用方法同beforeEach
+{
+  path: 'news',
+  component: News,
+  meta: {isAuth: true,title: '新闻'},
+  beforeEnter(to, from, next){
+    // 内容同beforeEach
+    ···
+  }
+},
+```
+（5）组件内守卫：在component.vue文件中，追加两个配置项。
+```javascript
+// 进入守卫：通过路由规则进入该组件时被调用
+beforeRouteEnter (to, from, next) {
+  // 内容同beforeEach
+}
+// 离开守卫：通过路由规则离开该组件时被调用
+beforeRouteLeave (to, from, next) {
+  // ...
+}
+```
+
 
 
 
