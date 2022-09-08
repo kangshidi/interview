@@ -1001,8 +1001,8 @@ this.$route.params.title;
   // props第三种写法，值为函数，该函数返回的对象中每一组key-value都会通过props形式传递Detail组件。
   props(route) {
     return {
-      id: route.query.id,
-      title: route.query.title,
+      id: route.params.id,
+      title: route.params.title,
     }
   },
 }
