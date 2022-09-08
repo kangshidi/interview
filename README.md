@@ -454,7 +454,7 @@ beforeDestory() {
   <h1 v-show=“isShow”>你好</h1>
 </transition>
 ```
-（3）备注：若有多个元素需要过渡，则需要使用<transition-group>标签，且每个元素都要指定key值。
+（3）备注：若有多个元素需要过渡，则需要使用`<transition-group>`标签，且每个元素都要指定key值。
 
 ### 24.Vue脚手架配置代理，在前端解决跨域
 编写vue.config.js文件，配置具体如下：
