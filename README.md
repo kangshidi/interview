@@ -347,7 +347,7 @@ Vue.use(pluginName)
 1. 一种组件间通信方式，适用于 **子组件 ===> 父组件**。
 2. 绑定自定义事件。<br>
 第一种方式：在父组件中，
-```javascript
+```html
 <Child @customEventName="callbackFunc" /> 或者 <Child v-on:customEventName="callbackFunc" />     
 ```
 第二种方式：在父组件中，
