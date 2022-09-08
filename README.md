@@ -434,7 +434,7 @@ beforeDestory() {
 
 ### 22.this.$nextTick(回调函数)
 1. 作用：在下一次DOM更新结束后执行其指定的回调。
-2. 什么时候用：当改变数据后，要基于更新后的新DOM进行某些操作时，要在$nextTick所指定的回调函数中执行。
+2. 什么时候用：当改变数据后，要基于**更新后的新DOM**进行某些操作时，要在`$nextTick`所指定的回调函数中执行。
 
 ### 23.Vue封装的过渡与动画
 1. 作用：在插入、更新或删除DOM元素时，在合适的时候给元素添加样式类名。
@@ -497,7 +497,7 @@ axios.get('http://localhost:8080/api1/interfaceName').then(response => {
 2. 分类：默认插槽、具名插槽、作用域插槽。
 3. 使用方式：<br>
 （1）默认插槽：
-```javascript
+```html
 // 父组件中：
 <Child>
   <div>html结构</div>
@@ -510,7 +510,7 @@ axios.get('http://localhost:8080/api1/interfaceName').then(response => {
 </div>
 ```
 （2）具名插槽：
-```javascript
+```html
 // 父组件中：
 <Child>
   <template slot="name1">
