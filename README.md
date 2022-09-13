@@ -1122,6 +1122,34 @@ beforeRouteLeave (to, from, next) {
 
 
 
+# React部分
+### 1. Context
+1. 组件间通信方式，常用于 **【祖组件】==>【后代组件】**
+2. 使用方法： <br/>
+```javascript
+// 1) 创建Context容器对象
+const MyContext = React.createContext()
+
+// 2) 渲染子组件时，外面包裹<MyContext.Provider>标签，通过value属性给后代组件传递数据
+<MyContext.Provider value={{key1: value1, key2:value2}}>
+  <Child />
+</MyContext.Provider>
+
+// 3) 后代组件读取数据有两种方式
+// 第一种：仅适用于类组件。
+static contextType = MyContext // 声明接收context
+this.context // 读取context中的value数据
+
+// 第二种：函数组件和类组件都可以使用。
+<MyContext.Consumer>
+  {
+    value => { // value就是context中的value数据
+      // return 要显示的内容
+    }
+  }
+</MyContext.Consumer>
+```
+
 
 
 
