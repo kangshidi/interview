@@ -1151,6 +1151,27 @@ this.context // 读取context中的value数据
 ```
 
 
+### 2. Effect Hook
+1. effect hook可以让你在函数组件中执行副作用操作（用于模拟类组件中的声明周期钩子）
+2. React中的副作用操作：
+- 发ajax请求获取数据
+- 设置订阅、启动定时器
+- 手动更改真实DOM
+3. 语法和说明：
+```javascript
+React.useEffect(() => {
+  // todo 添加副作用操作
+  return () => {
+    // todo 添加收尾工作，比如取消订阅、清除定时器
+  }
+}, [stateValue]) // 如果指定的是空数组[]，回调函数只会在第一次render()后执行
+// 第二个参数如果指定state中的变量，则会监测该变量的变化，变化一次，执行一次。
+```
+4. 可以把useEffect Hook看作如下三个函数的组合
+- componentDidMount
+- componentDidUpdate
+- componentWillUnmount
+
 
 
 
