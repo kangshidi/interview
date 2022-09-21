@@ -1173,6 +1173,42 @@ React.useEffect(() => {
 - componentWillUnmount
 
 
+### 3. 高阶函数
+如果一个函数符合下面2个规范中的任何一个，那该函数就是高阶函数。
+1. 若A函数，**接收的参数是一个函数**，那么A就可以称之为高阶函数。
+2. 若A函数，**调用后的返回值依然是一个函数**，那么A就可以称之为高阶函数。 <br>
+常见的高阶函数有：Promise、setTimeout、arr.map等
+
+### 4. 函数柯里化
+通过函数调用继续返回函数的方式，**实现多次接收参数最后统一处理**的函数编码形式。 <br>
+```javascript
+const sum = (a) => {
+  return (b) => {
+    return (c) => {
+      return a + b + c;
+    }
+  }
+}
+const result = sum(1)(2)(3);
+```
+
+### 5. 生命周期（旧）
+1. 初始化阶段：由`ReactDOM.render()`触发---初次渲染 <br>
+(1) constructor() <br>
+(2) componentWillMount()  <br>
+(3) render()  <br>
+(4) componentDidMount() ===> 常用 <br>
+一般在这个钩子做一些初始化的事，例如：开启定时器、发送网络请求、订阅消息等。 <br>
+2. 更新阶段：由组件内部`this.setState()`或父组件的`render`触发 <br>
+(1) shouldComponentUpdate() <br>
+(2) componentWillUpdate()  <br>
+(3) render() ===> 必须使用的一个  <br>
+(4) componentDidUpdate()  <br>
+3. 卸载组件：由`ReactDOM.unmountComponentAtNode()`触发  <br>
+(1) componentWillUnmount() ===> 常用 <br>
+一般在这个钩子做一些收尾的事，例如：清除定时器、取消订阅等。 <br>
+4. `componentWillReceiveProps()`
+
 
 
 
