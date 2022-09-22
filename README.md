@@ -1195,19 +1195,35 @@ const result = sum(1)(2)(3);
 ### 5. 生命周期（旧）
 1. 初始化阶段：由`ReactDOM.render()`触发---初次渲染 <br>
 (1) `constructor()` <br>
-(2) `componentWillMount()`  <br>
+(2) **`componentWillMount()`** 即将废弃 <br>
 (3) `render()`  <br>
 (4) `componentDidMount()` ===> 常用 <br>
 一般在这个钩子做一些初始化的事，例如：开启定时器、发送网络请求、订阅消息等。 <br>
 2. 更新阶段：由组件内部`this.setState()`或父组件的`render`触发 <br>
 (1) `shouldComponentUpdate()` <br>
-(2) `componentWillUpdate()`  <br>
+(2) **`componentWillUpdate()`** 即将废弃 <br>
 (3) `render()` ===> 必须使用的一个  <br>
 (4) `componentDidUpdate()`  <br>
 3. 卸载组件：由`ReactDOM.unmountComponentAtNode()`触发  <br>
 (1) `componentWillUnmount()` ===> 常用 <br>
 一般在这个钩子做一些收尾的事，例如：清除定时器、取消订阅等。 <br>
-4. `componentWillReceiveProps()`
+4. **`componentWillReceiveProps()`** 即将废弃 <br>
+
+
+### 6. 生命周期（新）
+1. 初始化阶段：由`ReactDOM.render()`触发---初次渲染 <br>
+(1) `constructor()` <br>
+(2) **`getDerivedStateFromProps()`** <br>
+(3) `render()` <br>
+(4) `componentDidMount()` ===> 常用 <br>
+2. 更新阶段：由组件内部`this.setState()`或父组件的`render`触发 <br>
+(1) `getDerivedStateFromProps()` <br>
+(2) `shouldComponentUpdate()`  <br>
+(3) `render()`  <br>
+(4) **`getSnapshotBeforeUpdate()`**  <br>
+(5) `componentDidUpdate()` <br>
+3. 卸载组件：由`ReactDOM.unmountComponentAtNode()`触发 <br>
+(1) `componentWillUnmount()` ===> 常用 <br>
 
 
 
