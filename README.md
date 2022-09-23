@@ -1226,7 +1226,6 @@ const result = sum(1)(2)(3);
 (1) `componentWillUnmount()` ===> 常用 <br>
 
 
-
 ### 7. React脚手架配置代理
 1. 方法一：在package.json中追加如下配置： <br>
 ```javascript
@@ -1239,7 +1238,7 @@ const result = sum(1)(2)(3);
 
 2. 方法二： <br>
 (1) 第一步：创建代理配置文件 <br>
-> 在src下创建配置文件：src/setupProxy.js
+在src下创建配置文件：src/setupProxy.js <br>
 (2) 编写setupProxy.js文件，配置具体代理规则。 <br>
 ```javascript
 const proxy = require("http-proxy-middleware");
@@ -1274,11 +1273,11 @@ module.export = function(app) {
 Component的2个问题 <br>
 (1) 只要执行setState({})，即便不改变数据，组件也会重新render()。==> 效率低 <br>
 (2) 只要父组件重新render，就会自动重新render子组件，即便子组件中并没有用到父组件的任何数据。==> 效率低 <br>
-效率高的做法 <br>
-> 只有当组件的state或props数据发生改变时才重新render()。
-原因 <br>
-> Component中的`shouldComponentUpdate()`总是返回true。
-解决  <br>
+效率高的做法: <br>
+只有当组件的state或props数据发生改变时才重新render()。 <br>
+原因: <br>
+Component中的`shouldComponentUpdate()`总是返回true。 <br>
+解决:  <br>
 （1）办法一：重写`shouldComponentUpdate()`方法，比较props和state，有变化返回true，没有变就返回false。 <br>
 （2）办法二：继承`PureComponent`代替`Component`。 <br>
 PureComponent的内部重写了`shouldComponentUpdate()`方法，只有props和state里面的值发生改变才返回true。 <br>
@@ -1289,10 +1288,10 @@ PureComponent的内部重写了`shouldComponentUpdate()`方法，只有props和s
 ### 9. render props
 如何向组件内部动态传入带内容的结构（标签）？ <br>
 Vue中： <br>
-> 使用slot。`<A><B/></A>` <br>
+- 使用slot。`<A><B/></A>` <br>
 React中： <br>
-> 使用children props: 通过组件标签体传入结构。 <br>
-> 使用render props: 通过组件标签属性传入结构，而且可以携带数据，一般用render函数属性。 <br>
+- 使用children props: 通过组件标签体传入结构。 <br>
+- 使用render props: 通过组件标签属性传入结构，而且可以携带数据，一般用render函数属性。 <br>
 
 children props：
 ```javascript
@@ -1348,18 +1347,6 @@ render() {
   )
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
