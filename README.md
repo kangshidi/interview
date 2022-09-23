@@ -1227,6 +1227,132 @@ const result = sum(1)(2)(3);
 
 
 
+### 7. React脚手架配置代理
+1. 方法一：在package.json中追加如下配置： <br>
+```javascript
+"proxy": "http://xx.xx.xx.xx:5000"
+```
+说明： <br>
+- 优点：配置简单，前端请求资源时可以不加任何前缀。 <br>
+- 缺点：不能配置多个代理。 <br>
+- 工作方式：上述方式配置代理，当请求了3000（本身前端端口号）不存在的资源时，那么该请求会转发给5000（优先匹配前端资源）。 <br>
+
+2. 方法二： <br>
+(1) 第一步：创建代理配置文件 <br>
+> 在src下创建配置文件：src/setupProxy.js
+(2) 编写setupProxy.js文件，配置具体代理规则。 <br>
+```javascript
+const proxy = require("http-proxy-middleware");
+
+module.export = function(app) {
+  app.use(
+    proxy("/api1", {
+      target: "http://localhost:5000", // 后台服务器地址
+      changeOrigin: true, // 控制服务器接收到的请求头中host字段的值
+      pathRewrite: {
+        "^/api1": "" // 去除请求前缀，保证交给后台服务器的是正常请求地址（必须配置）
+      }
+    }),
+    proxy("/api2", {
+      target: "http://localhost:5001", // 后台服务器地址
+      changeOrigin: true,
+      pathRewrite: {
+        "^/api2": ""
+      }
+    }),
+  )
+};
+// changeOrigin设置为true时，服务器收到的请求头中host为：localhost:5000
+// changeOrigin设置为false时，服务器收到的请求头中host为：localhost:3000
+// changeOrigin默认值为false，但是我们一般将其设为true
+```
+说明: <br>
+- 优点：可以配置多个代理，可以灵活的控制请求是否走代理。
+- 缺点：配置繁琐，前端请求资源时必须加前缀。
+
+### 8. 组件优化 PureComponent
+Component的2个问题 <br>
+(1) 只要执行setState({})，即便不改变数据，组件也会重新render()。==> 效率低 <br>
+(2) 只要父组件重新render，就会自动重新render子组件，即便子组件中并没有用到父组件的任何数据。==> 效率低 <br>
+效率高的做法 <br>
+> 只有当组件的state或props数据发生改变时才重新render()。
+原因 <br>
+> Component中的`shouldComponentUpdate()`总是返回true。
+解决  <br>
+（1）办法一：重写`shouldComponentUpdate()`方法，比较props和state，有变化返回true，没有变就返回false。 <br>
+（2）办法二：继承`PureComponent`代替`Component`。 <br>
+PureComponent的内部重写了`shouldComponentUpdate()`方法，只有props和state里面的值发生改变才返回true。 <br>
+注意：  <br>
+只是进行了props和state的浅比较。不要直接修改state数据，而是要产生新的state数据。 <br>
+
+
+### 9. render props
+如何向组件内部动态传入带内容的结构（标签）？ <br>
+Vue中： <br>
+> 使用slot。`<A><B/></A>` <br>
+React中： <br>
+> 使用children props: 通过组件标签体传入结构。 <br>
+> 使用render props: 通过组件标签属性传入结构，而且可以携带数据，一般用render函数属性。 <br>
+
+children props：
+```javascript
+// 包含A组件的组件
+<A>
+  <B/>
+</A>
+
+// A组件
+{this.props.children} // 通过children展示B组件
+
+// 问题：如果B组件需要A组件内的数据，做不到。
+```
+
+render props：(render可以改成其他名字，不过一般都用render)
+```javascript
+// 包含A组件的组件
+<A render={(data) => <B data={data}/>} />
+
+// A组件
+{this.props.render("realData")} // 通过调用render函数展示B组件，并且给B组件传值。
+
+// B组件
+{this.props.data} // 获取data
+```
+
+### 10. 错误边界
+理解： <br>
+错误边界（Error boundary）用来**捕获后代组件错误**，渲染出备用页面。 <br>
+特点： <br>
+只能捕获后代组件生命周期产生的错误，不能捕获自己组件产生的错误和其他组件在合成事件、定时器中产生的错误。 <br>
+使用方式： <br>
+`getDerivedStateFromError`配合`componentDidCatch`
+```javascript
+// 容易出错的组件的父组件内
+state = {
+  hasError: ''
+}
+
+// 生命周期函数，一旦子组件报错，就会触发
+static getDerivedStateFromError(error) {
+  // 在render之前触发，返回新的state
+  return {hasError: error}
+}
+
+componentDidCatch(error, info) {
+  // todo 统计页面出现的错误，发送给服务器
+}
+
+render() {
+  return (
+    {this.state.hasError ? <div>系统繁忙</div> : <Child/>}
+  )
+}
+```
+
+
+
+
+
 
 
 
