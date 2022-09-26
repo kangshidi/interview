@@ -1373,15 +1373,15 @@ render() {
 - goBack: f goBack()
 - goForward: f goForward()
 - push: f push(path, state)
-- replace: f replace(path, state)
-(2) location <br>
+- replace: f replace(path, state) <br>
+(2) location
 - pathname: "/home"
 - search: ""
-- state: undefined
-(3) match  <br>
+- state: undefined <br>
+(3) match 
 - params: {}
 - path: "/home"
-- url: "/home"
+- url: "/home" <br>
 
 ### 13. NavLink与封装NavLink
 1. NavLink可以实现路由链接的高亮，通过`activeClassName`属性指定样式名。
