@@ -1363,8 +1363,8 @@ render() {
 
 ### 12. 路由组件和一般组件
 1. 写法不同。
-- 一般组件：<Home />
-- 路由组件：<Route path="/home" component={Home}/>
+- 一般组件：`<Home />`
+- 路由组件：`<Route path="/home" component={Home}/>`
 2. 接收到的props不同。
 - 一般组件：写组件标签时传递了什么，就能收到什么。
 - 路由组件：接收到3个固定的属性。 <br>
