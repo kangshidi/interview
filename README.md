@@ -1349,5 +1349,55 @@ render() {
 ```
 
 
+### 11. 路由的基本使用
+1. 导航区
+```html
+<Link to="/home">Home</Link>
+```
+2. 展示区---注册路由
+```html
+<Route path="/home" component={Home}/>
+```
+
+3. `<App/>`组件的最外侧包裹一个`<BrowserRouter></BrowserRouter>`或者`<HashRouter></HashRouter>`标签。
+
+### 12. 路由组件和一般组件
+1. 写法不同。
+- 一般组件：<Home />
+- 路由组件：<Route path="/home" component={Home}/>
+2. 接收到的props不同。
+- 一般组件：写组件标签时传递了什么，就能收到什么。
+- 路由组件：接收到3个固定的属性。 <br>
+(1) history <br>
+- go: f go(n)
+- goBack: f goBack()
+- goForward: f goForward()
+- push: f push(path, state)
+- replace: f replace(path, state)
+(2) location <br>
+- pathname: "/home"
+- search: ""
+- state: undefined
+(3) match  <br>
+- params: {}
+- path: "/home"
+- url: "/home"
+
+### 13. NavLink与封装NavLink
+1. NavLink可以实现路由链接的高亮，通过`activeClassName`属性指定样式名。
+2. **标签体内容**是一个特殊的**标签属性（属性名:children）**。
+3. 通过`this.props.children`可以获取标签体内容。
+
+### 14. Switch的使用
+1. 通常情况下，path和component是一一对应的关系。
+2. Switch可以提高路由匹配效率（单一匹配）。
+3. 使用方法: 只展示Home组件，不会继续向下寻找。
+```html
+<Switch>
+  <Route path="/home" component={Home}/>
+  <Route path="/home" component={Test}/>
+</Switch>
+```
+
 
 
