@@ -1368,17 +1368,17 @@ render() {
 2. 接收到的props不同。
 - 一般组件：写组件标签时传递了什么，就能收到什么。
 - 路由组件：接收到3个固定的属性。 <br>
-(1) history <br>
+(1) **history** <br>
 - go: f go(n)
 - goBack: f goBack()
 - goForward: f goForward()
 - push: f push(path, state)
 - replace: f replace(path, state) <br>
-(2) location
+(2) **location**
 - pathname: "/home"
 - search: ""
 - state: undefined <br>
-(3) match 
+(3) **match**
 - params: {}
 - path: "/home"
 - url: "/home" <br>
