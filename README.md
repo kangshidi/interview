@@ -1413,20 +1413,47 @@ render() {
 
 ### 16. 向路由组件传递参数
 1. params参数
-- 路由链接（携带参数）：`<Link to={`/home/message/detail/${id}/${title}`}>详情</Link>`
-- 注册路由（声明接收）：`<Route path="/home/message/detail/:id/:title" component={Detail}/>`
-- 组件内接收参数：**`const {id, title} = this.props.match.params`**
+- 路由链接（携带参数）：
+```javascript
+<Link to={`/home/message/detail/${id}/${title}`}>详情</Link>
+```
+- 注册路由（声明接收）：
+```javascript
+<Route path="/home/message/detail/:id/:title" component={Detail}/>
+```
+- 组件内接收参数：
+```javascript
+const {id, title} = this.props.match.params
+```
 
 2. search参数
-- 路由链接（携带参数）：`<Link to={`/home/message/detail?id=${id}&title=${title}`}>详情</Link>`
-- 注册路由（无需声明，正常注册）：`<Route path="/home/message/detail" component={Detail}/>`
-- 组件内接收参数：**`const {search} = this.props.location`** <br>
+- 路由链接（携带参数）：
+```javascript
+<Link to={`/home/message/detail?id=${id}&title=${title}`}>详情</Link>
+```
+- 注册路由（无需声明，正常注册）：
+```javascript
+<Route path="/home/message/detail" component={Detail}/>
+```
+- 组件内接收参数：
+```javascript
+const {search} = this.props.location
+```
 备注：获取到的search是urlencoded编码格式的字符串，需要使用querystring（脚手架已经默认安装该库）解析。
 
 3. state参数（不同于组件的state，就只是路由的state）
-- 路由链接（携带参数）：`<Link to={{pathname: '/home/message/detail', state: {id: id,title: title}}}>详情</Link>`
-- 注册路由（无需声明，正常注册）：`<Route path="/home/message/detail" component={Detail}/>`
-- 组件内接收参数：**`const {id, title} = this.props.location.state`** <br>
+- 路由链接（携带参数）：
+```javascript
+<Link to={{pathname: '/home/message/detail', state: {id: id,title: title}}}>详情</Link>
+```
+- 注册路由（无需声明，正常注册）：
+```javascript
+<Route path="/home/message/detail" component={Detail}/>
+```
+- 组件内接收参数：
+```javascript
+const {id, title} = this.props.location.state
+```
 备注：刷新页面也可以保留住参数。
 
 ### 17. 编程式路由导航
@@ -1458,8 +1485,6 @@ export default withRouter(Test)
 - BrowserRouter没有任何影响，因为state保存在history对象中。
 - HashRouter刷新后导致路由state参数的丢失！！！
 4. 备注：HashRouter可以用于解决一些路径错误相关的问题。（路径不会发送到服务器）
-
-
 
 
 
