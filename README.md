@@ -209,8 +209,8 @@ vue3
 ### 3.SPA实现原理
 SPA single page application 单页面应用
 不刷新整个页面来实现页面跳转，提高用户体验。
-1. 使用history的api（pushState，replaceState等），监听popstate事件。
-2. 使用window.location.hash，监听hashchange事件。
+1. 使用history的api（pushState，replaceState等），监听**popstate**事件。
+2. 使用window.location.hash，监听**hashchange**事件。
 
 ### 4.Vue中常用的事件修饰符
 1. .prevent : 阻止默认事件（常用）
