@@ -1400,4 +1400,69 @@ render() {
 ```
 
 
+### 15. Rediect的使用
+1. 一般写在所有路由注册的最下方，当所有路由都无法匹配时，跳转到Redirect指定的路由。
+2. 具体编码：
+```javascript
+<Switch>
+  <Route path="/home" component={Home}/>
+  <Route path="/about" component={About}/>
+  <Rediect to="/home"/>
+</Switch>
+```
+
+### 16. 向路由组件传递参数
+1. params参数
+- 路由链接（携带参数）：`<Link to={`/home/message/detail/${id}/${title}`}>详情</Link>`
+- 注册路由（声明接收）：`<Route path="/home/message/detail/:id/:title" component={Detail}/>`
+- 组件内接收参数：**`const {id, title} = this.props.match.params`**
+
+2. search参数
+- 路由链接（携带参数）：`<Link to={`/home/message/detail?id=${id}&title=${title}`}>详情</Link>`
+- 注册路由（无需声明，正常注册）：`<Route path="/home/message/detail" component={Detail}/>`
+- 组件内接收参数：**`const {search} = this.props.location`** <br>
+备注：获取到的search是urlencoded编码格式的字符串，需要使用querystring（脚手架已经默认安装该库）解析。
+
+3. state参数（不同于组件的state，就只是路由的state）
+- 路由链接（携带参数）：`<Link to={{pathname: '/home/message/detail', state: {id: id,title: title}}}>详情</Link>`
+- 注册路由（无需声明，正常注册）：`<Route path="/home/message/detail" component={Detail}/>`
+- 组件内接收参数：**`const {id, title} = this.props.location.state`** <br>
+备注：刷新页面也可以保留住参数。
+
+### 17. 编程式路由导航
+借助`this.props.history`对象上的api操作路由跳转、前进、后退
+- `this.props.history.push(path, state)`
+- `this.props.history.replace(path, state)`
+- `this.props.history.goBack()`
+- `this.props.history.goForward()`
+- `this.props.history.go(n)`
+
+### 18. withRouter的使用
+withRouter可以加工一般组件，让一般组件具备路由组件所特有的API(history、location、match) <br>
+withRouter函数的返回值是一个新组件 <br>
+```javascript
+import {withRouter} from "react-router-dom"
+
+class Test extends React.Component {...}
+export default withRouter(Test)
+```
+
+### 19. BrowserRouter和HashRouter的区别
+1. 底层原理不一样：
+- BrowserRouter使用的是H5的history API，不兼容IE9及以下版本。
+- HashRouter使用的是URL的hash。
+2. path表现形式不一样：
+- BrowserRouter的路径中没有`#`，例如：`localhost:3000/home/message`
+- HashRouter的路径包含`#`，例如：`localhost:3000/#/home/message`
+3. 刷新后对路由state参数的影响：
+- BrowserRouter没有任何影响，因为state保存在history对象中。
+- HashRouter刷新后导致路由state参数的丢失！！！
+4. 备注：HashRouter可以用于解决一些路径错误相关的问题。（路径不会发送到服务器）
+
+
+
+
+
+
+
 
