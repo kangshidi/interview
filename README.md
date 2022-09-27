@@ -1483,7 +1483,7 @@ export default withRouter(Test)
 - HashRouter的路径包含`#`，例如：`localhost:3000/#/home/message`
 3. 刷新后对路由state参数的影响：
 - BrowserRouter没有任何影响，因为state保存在history对象中。
-- HashRouter刷新后导致路由state参数的丢失！！！
+- **HashRouter刷新后导致路由state参数的丢失！！！**
 4. 备注：HashRouter可以用于解决一些路径错误相关的问题。（路径不会发送到服务器）
 
 
