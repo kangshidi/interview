@@ -188,6 +188,216 @@ sessionStorage.clear();
 - getItem('key')对应的value如果获取不到，返回值则为null。
 - JSON.parse(null)的结果依然是null。
 
+
+### 23. 前端模块化
+1. 模块化的好处
+- 避免命名冲突
+- 更好的分离，按需加载
+- 高复用性
+- 高可维护性
+
+2. 模块化规范
+(1) CommonJS <br>
+- 主要应用于服务器端（node），同步加载（会有阻塞问题）。
+- 也可以应用在浏览器端，但需要`browserify`编译处理。
+暴露模块：
+```javascript
+// 暴露模块有两种方式，注意：最后暴露出来的都是exports对象！
+// 第一种
+module.exports = {...}
+
+// 第二种
+exports.xxx = value
+```
+引入模块：
+```javascript
+// 使用require引入，传入模块文件的路径，后缀名.js可省略不写
+let module1 = require("./module1");
+// 调用module1的方法
+module1.foo();
+```
+注意： <br>
+- 服务器端直接使用命令执行`node main.js`。
+- 浏览器端需要使用browserify命令进行编译，不然浏览器无法解析require <br>
+`browserify ./src/main.js -o ./dist/main.js` <br>
+然后在html文件中引入`dist/main.js`。
+
+(2) AMD（Asynchronous Module Definition 异步模块定义） <br>
+- 异步加载，专门用于浏览器端。
+- 需要借助`require.js`。
+定义模块：
+```javascript
+// 模块moudleA：没有依赖
+define(function() {
+  let msg = "moudleA";
+  function getMsg() {
+    return msg;
+  }
+
+  // 暴露模块！！！
+  return {
+    getMsg
+  }
+})
+
+// 模块moudleB：有依赖
+define(["moduleA"], function(moduleA) {
+  let msg = "moduleB";
+  function foo() {
+    console.log(msg, moduleA.getMsg());
+  }
+
+  // 暴露模块！！！
+  return {
+    foo
+  }
+})
+```
+引用模块(main.js文件)：
+```javascript
+// requirejs配置
+requirejs.config({
+  // baseUrl: 'js/lib',
+  paths: {
+    moduleA: './moduleA', // 不要写.js后缀，寻找时会自动加上。
+    moduleB: './moduleB'
+  }
+});
+
+// 使用requirejs引入moduleB
+requirejs(["moduleB"], function(moduleB) {
+  // 调用moduleB的方法
+  moduleB.foo();
+});
+```
+`index.html`中引入`requrie.js`:
+```html
+<script data-main="./main.js" src="./libs/require.js"></script>
+```
+
+(3) CMD（Common Module Definition 通用模块定义） <br>
+- 用于浏览器端，可同步加载，也可异步加载。
+- 借助`sea.js`实现。
+- 结合了CommonJS和AMD的语法。
+
+定义模块：
+```javascript
+// 有三个参数
+// require：用于引入依赖
+// exports：用于暴露模块
+// module：用于暴露模块
+
+// 定义模块moudle1 没有依赖
+define(function(require, exports, module) {
+  let msg = "moudle1";
+  function foo() {
+    console.log(msg);
+  }
+  // 暴露模块 module.exports
+  module.exports = {foo}
+  // 还有一种暴露方式：exports
+  // exports.foo = foo;
+});
+
+// 定义模块moudle2 依赖moudle1
+define(function(require, exports, module) {
+  let msg = "moudle2";
+  function bar() {
+    console.log(msg);
+  }
+
+  // 同步加载
+  let module1 = require("./module1");
+  module1.foo();
+
+  // 异步加载
+  require.async("./module1", function(module1) {
+    module1.foo();
+  });
+
+  // 暴露模块：exports
+  exports.bar = bar;
+});
+```
+引入模块(main.js文件)：
+```javascript
+// 不需要暴露，所以只接收第一个require参数即可
+define(function(require) {
+  // 同步加载
+  let module2 = require("./module2");
+  module2.bar();
+});
+```
+`index.html`中引入`sea.js`:
+```html
+ <!-- 引入sea.js  -->
+<script type="text/javascript" src="./libs/sea.js"></script>
+<script type="text/javascript">
+  // 加载入口模块
+  seajs.use("./main");
+  // 运行之后注意观察log打印的顺序，异步操作在同步操作执行之后才执行。
+</script>
+```
+
+(4) EX6 <br>
+- 浏览器和服务器通用的模块解决方案。
+- 需要借助babel将es6的语法转成es5。
+- 需要借助browserify解析require语法。
+暴露模块：
+```javascript
+// 三种暴露方式
+
+// 第一种：分别暴露
+export function foo() {
+  console.log("module1 foo()");
+}
+export function bar() {
+  console.log("module1 bar()");
+}
+
+// 第二种：统一暴露
+function fun() {
+  console.log("module2 fun()");
+}
+function fun2() {
+  console.log("module2 fun2()");
+}
+export {fun, fun2}
+
+// 第三种：默认暴露
+export default {
+  msg: "module3 默认暴露",
+  foo() {
+    console.log(this.msg);
+  }
+};
+```
+引入模块：
+```javascript
+// 引入模块
+import {foo as xxx, bar} from "./module1"
+import {fun, fun2} from "./module2"
+import module3 from "./module3"
+
+xxx();
+bar();
+fun();
+fun2();
+module3.foo();
+```
+注意： <br>
+- 需要安装`babel-cli`、`babel-preset-es2015`和`browserify`。
+- 需要配置babel。(.babelrc文件  rc： run control)
+```json
+{
+  "presets": ["es2015"]
+}
+```
+- 需要运行babel将es6的语法转成es5 `npx babel src --out-dir bundle`
+- 还需要使用browserify命令进行编译，不然浏览器无法解析require `browserify ./bundle/main.js -o ./dist/main.js`
+- 最后在页面引入dist文件夹的中main.js即可。
+
+
 # Vue部分
 ### 1.MVVM
 MVVM表示的是Model-View-ViewModel
