@@ -196,7 +196,8 @@ sessionStorage.clear();
 - 高复用性
 - 高可维护性
 
-2. 模块化规范
+2. 模块化规范 <br>
+
 (1) CommonJS <br>
 - 主要应用于服务器端（node），同步加载（会有阻塞问题）。
 - 也可以应用在浏览器端，但需要`browserify`编译处理。
@@ -224,7 +225,7 @@ module1.foo();
 
 (2) AMD（Asynchronous Module Definition 异步模块定义） <br>
 - 异步加载，专门用于浏览器端。
-- 需要借助`require.js`。
+- 需要借助`require.js`。 <br>
 定义模块：
 ```javascript
 // 模块moudleA：没有依赖
@@ -339,10 +340,11 @@ define(function(require) {
 </script>
 ```
 
-(4) EX6 <br>
+(4) ES6 <br>
 - 浏览器和服务器通用的模块解决方案。
 - 需要借助babel将es6的语法转成es5。
 - 需要借助browserify解析require语法。
+
 暴露模块：
 ```javascript
 // 三种暴露方式
@@ -396,6 +398,7 @@ module3.foo();
 - 需要运行babel将es6的语法转成es5 `npx babel src --out-dir bundle`
 - 还需要使用browserify命令进行编译，不然浏览器无法解析require `browserify ./bundle/main.js -o ./dist/main.js`
 - 最后在页面引入dist文件夹的中main.js即可。
+
 
 
 # Vue部分
