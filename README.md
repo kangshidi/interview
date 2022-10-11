@@ -401,6 +401,86 @@ module3.foo();
 
 
 
+
+### 24. Promise
+1. Promise不是回调，是一个内置的构造函数，需要程序员new调用。
+2. new Promise的时候，要传入一个回调函数，它是**同步回调函数**，会**立即在主线程上执行**，它被称为executor函数。
+3. 每一个Promise实例都有3种状态：初始化（pending）、成功（fulfilled）、失败（rejected）。
+4. 每一个Promise实例在刚被new出来的那一刻，状态都是初始化（pending）。
+5. executor函数会接收到两个参数，它们都是函数，分别用形参resolve、reject表示。
+- 调用resolve函数，会让Promise实例状态变为：成功（fulfilled），同时可以指定成功的value。
+- 调用reject函数，会让Promise实例状态变为：失败（rejected），同时可以指定失败的reason。
+6. **状态只能改变一次！!**
+- pending => fulfilled
+- pending => rejected
+7. `Promise.prototype.then`方法：`Promise实例.then(onFulfilled, onRejected)`
+- onFulfilled： 成功的回调
+- onRejected： 失败的回调
+- 特别注意：**then方法会返回一个新的Promise实例对象**
+8. `Promise.prototype.catch`方法：`Promise实例.catch(onRejected)`
+- onRejected： 失败的回调
+- 说明：catch方法是then方法的语法糖，相当于：`then(undefined, onRejected)`
+9. `Promise.resolve`方法：`Promise.resolve(value)`
+- value的值可能是：（1）非Promise对象 （2）Promise对象
+- 说明：用于快速返回一个状态为fulfilled（当value为非Promise对象时）或rejected（当value为Promise对象时，取决于这个Promise对象的状态）的Promise实例对象。
+10. `Promise.reject`方法：`Promise.reject(value)`
+- value的值可能是：（1）非Promise对象 （2）Promise对象
+- 说明：用于快速返回一个状态必为rejected的Promise实例对象。
+11. `Promise.all`方法：`Promise.all([promiseArray])`
+- promiseArray：包含n个Promise实例的数组
+- 说明：返回一个新的Promise实例，只有所有的Promise都成功才成功，只要有一个失败就失败。
+12. `Promise.race`方法：`Promise.race([promiseArray])`
+- promiseArray：包含n个Promise实例的数组
+- 说明：返回一个新的Promise实例，成功还是失败由最先出结果的Promise为准。
+13. 如何改变一个Promise实例的状态？（注意：状态只能改变一次！） <br>
+（1）执行resolve(value)，如果当前是pending，会变成fulfilled。 <br>
+（2）执行reject(reason)，如果当前是pending，会变成rejected。 <br>
+（3）**执行器函数（executor）抛出异常，如果当前是pending，会变成rejected。** <br>
+14. Promise实例.then()返回的是一个【新的Promise实例】，它的状态和值由什么决定？ <br>
+由then()所指定的回调函数执行的结果决定。
+（1）如果then所指定的回调返回的是  非Promise实例a： <br>
+    **那么【新的Promise实例】状态为：成功（fulfilled），成功的value为：a。** <br>
+（2）如果then所指定的回调返回的是一个 Promise实例p： <br>
+    **那么【新的Promise实例】状态和值，都与p一致。** <br>
+（3）如果then所指定的回调抛出异常：  <br>
+    **那么【新的Promise实例】状态为：失败（rejected），reason为抛出的那个异常。** <br>
+15. 中断Promise链的方法。 <br>
+（1）当使用Promise的then链式调用时，在中间中断，不再调用后面的回调函数。 <br>
+（2）办法：在每一个失败的回调函数中，**返回一个pendding状态的Promise实例**（`return new Promise(()=>{})`）。 <br>
+16. Promise错误穿透。 <br>
+（1）当使用Promise的then链式调用时，可以在最后用catch指定一个失败的回调。 <br>
+（2）前面任何操作出了错误，都会传到最后失败的回调中处理。 <br>
+备注：如果不存在then的链式调用，就不需要考虑then的错误穿透。 <br>
+17. Promise的优势。 <br>
+（1）指定回调函数的方式更加灵活，想什么时候定义就什么时候定义。 <br>
+（2）支持链式调用，可以解决回调地狱问题。 <br>
+
+
+### 25. async与await
+1. async修饰的函数 <br>
+- **函数的返回值为Promise实例**。
+- Promise实例的结果由async函数执行的返回值决定。
+2. await表达式。 <br>
+- await右侧的表达式一般为Promise实例对象，但也可能是其他的值。
+- 如果表达式是Promise实例对象，await后的返回值是**Promise成功的值**。
+- 如果表达式是其他的值，直接将此值作为await的返回值。
+3. 注意： <br>
+- await必须写在async函数中，但async函数中可以没有await。
+- **如果await的Promise实例失败了，就会抛出异常，需要通过try...catch来捕获异常**。
+4. 若使用async配合await这种写法：
+（1）表面上不会出现任何回调函数。 <br>
+（2）但实际上底层对代码进行了加工，把回调函数“还原”回来了。 <br>
+（3）最终运行的代码依然是有回调的，只是程序员看不到。 <br>
+
+### 26.宏队列与微队列
+1. 宏队列中存放的都是宏任务。
+2. 微队列中存放的都是微任务。
+3. 规则：**每次要执行宏队列里的一个任务之前，先看微队列里是否有待执行的微任务。** <br>
+（1）如果有，先执行微任务。 <br>
+（2）如果没有，按照宏队列里面任务的顺序，依次执行。 <br>
+
+
+
 # Vue部分
 ### 1.MVVM
 MVVM表示的是Model-View-ViewModel
