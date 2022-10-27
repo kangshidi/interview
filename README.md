@@ -1782,29 +1782,29 @@ export default withRouter(Test)
 
 
 # 性能优化
-1. 减少HTTP请求
+1. 减少HTTP请求 <br>
 （1）CSS Sprites （雪碧图） <br>
 （2）使用字体图标 <br>
 （3）小图片使用base64 <br>
-2. 使用浏览器缓存
+2. 使用浏览器缓存 <br>
 （1）强缓存 <br>
-- expires
-- cache-control
+- expires <br>
+- cache-control <br>
 （2）协商缓存 <br>
-- Last-Modified/If-Modified-Since
-- Etag/If-None-Match
-3. 压缩
+- Last-Modified/If-Modified-Since <br>
+- Etag/If-None-Match <br>
+3. 压缩 <br>
 （1）Gzip <br>
-- Accept-Encoding: gzip/Content-Encoding: gzip
+- Accept-Encoding: gzip/Content-Encoding: gzip <br>
 （2）CSS压缩 <br>
 （3）JS压缩 <br>
 （4）图片压缩 <br>
-4. 代码
+4. 代码 <br>
 （1）减少回流和重绘 <br>
 （2）防抖和节流 <br>
 （3）JS异步加载 async/defer <br>
 （4）CDN 缓存服务器 负载均衡 <br>
-5. Webpack
+5. Webpack <br>
 （1）TreeShaking 移除没有使用的代码 <br>
 （2）CSS压缩，JS压缩，图片压缩 <br>
 （3）按需加载（chunkFilename）和Code Split（splitChunks） <br>
