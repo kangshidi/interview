@@ -1810,5 +1810,54 @@ export default withRouter(Test)
 （3）按需加载（chunkFilename）和Code Split（splitChunks） <br>
 （4）preload/prefetch 浏览器空闲时加载 <br>
 
+# 安全
+1. SQL注入 <br>
+防御：校验用户输入，过滤非法字符。 <br>
+2. XSS攻击（Cross Site Scripting）跨站脚本攻击 <br>
+防御：校验用户输入，过滤非法字符。 （前后端一起）<br>
+3. CSRF攻击（Cross Site Request Forgery）跨站请求伪造 <br>
+防御： <br>
+- 验证码
+- 验证请求头的Referer
+- Anti CSRF Token
+  
+  
+  
+# Vue3
+### 1. setup的两个注意点
+1. setup执行时机
+- 在beforeCreate之前执行，**this是undefined**。
+2. setup的参数
+- props：值为对象，包含组件外部传递过来的，并且组件内部声明接收了的属性。
+- context：上下文对象。
+（1）attrs：值为对象，包含：组件外部传递进来的，但是没有在组件内部声明接收的属性。相当于`this.$attrs`。 <br>
+（2）slots：收到的插槽内容，相当于`this.$slots`。 <br>
+（3）emit：分发自定义事件的函数，相当于`this.$emit`。<br>
 
+### 2. ref函数
+1. 作用：定义一个响应式的数据。
+2. 语法：`const xxx = ref(initValue)`。
+- 创建一个包含响应式数据的**引用对象（RefImpl）**。
+- JS中如何操作数据：`xxx.value`。
+- 模板中读取数据：不需要`.value`，直接`<div>{{xxx}}</div>`。
+3. 备注
+- 接收的数据可以是基本类型，也可以是对象类型。
+- 基本类型的数据：响应式依然是靠`Object.definedProperty()`的get和set完成的。
+- 对象类型的数据：内部求助了vue3中的新函数`reactive()`函数。
+
+### 3. reactive函数
+1. 作用：定义一个**对象类型**的响应式数据（基本类型不要用它，要用ref函数）。
+2. 语法：`const xxx = reactive({...})`接收一个对象（或数组），返回一个**代理对象（Proxy对象）**。
+3. reactive定义的响应式数据是**深层次的**。
+4. 内部基于ES6的Proxy实现，通过代理对象操作源对象内部数据。
+
+### 4. toRef
+1. 作用：创建一个ref对象，其value值指向另一个对象中的某个属性。
+2. 语法：`const name = toRef(person, 'name')`。
+3. 应用：要将响应式对象中的某个属性单独提供给外部使用时。
+4. 扩展：`toRefs`与`toRef`功能一致，但可以批量创建多个ref对象，语法：`toRefs(person)`。
+
+
+
+  
 
