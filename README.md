@@ -1829,7 +1829,7 @@ export default withRouter(Test)
 - 在beforeCreate之前执行，**this是undefined**。
 2. setup的参数
 - props：值为对象，包含组件外部传递过来的，并且组件内部声明接收了的属性。
-- context：上下文对象。
+- context：上下文对象。 <br>
 （1）attrs：值为对象，包含：组件外部传递进来的，但是没有在组件内部声明接收的属性。相当于`this.$attrs`。 <br>
 （2）slots：收到的插槽内容，相当于`this.$slots`。 <br>
 （3）emit：分发自定义事件的函数，相当于`this.$emit`。<br>
