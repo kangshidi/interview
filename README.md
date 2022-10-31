@@ -1858,6 +1858,87 @@ export default withRouter(Test)
 4. 扩展：`toRefs`与`toRef`功能一致，但可以批量创建多个ref对象，语法：`toRefs(person)`。
 
 
+# Angular
+
+### 1. 依赖注入
+依赖注入就是在一个类的内部不通过new一个对象这种方式来创建依赖类的对象，而是在外部创建好需要依赖类的对象之后，通过构造函数的方式注入进来。 <br>
+java中的Spring框架就是帮助程序创建好依赖类的框架，或者也叫**IOC容器（Inversion Of Control 控制反转）**，Angular也会实现依赖注入。
+```javascript
+@Component({
+  selector: 'app-notification',
+  templateUrl: './notification.component.html',
+  styleUrls: ['./notification.component.less']
+}) // 注解
+export class NotificationComponent implements OnInit {
+  constructor(private msg: MessageService) {}
+
+  // 上面是下面的简写
+  constructor(@Inject(MessageService) private msg: MessageService) {}
+
+  ngOnInit() {
+    // 类内部不需要new出来这个msg对象，框架new出来传给构造函数，类内部可直接使用。
+    this.msg.send();
+  }
+}
+```
+
+### 2. 脏检查
+1. 触发脏检查 <br/>
+（1）**事件监听** <br/>
+（2）**定时器** ？？？ <br/>
+（3）**ajax异步请求** ？？？ <br/>
+2. `$watch` <br/>
+**Angular中每一个绑定到UI的数据，都会有一个watch对象**。 <br/>
+watch对象有三个属性 <br/>
+- name：字符串，scope中对应的数据名
+- getNewValue：函数，可以获取最新的name的值
+- listener：函数，当数据发生改变时需要执行的操作 <br/>
+`$watch`函数，接收以上三个属性，在内部创建watch对象，并且对象会被push到watchList中。  <br />
+3. `$digest`  <br/>
+遍历watchList，对比每个watch对象中指定的scope中的数据的值有没有变化，如果有的话，执行相应的listenre函数，更新视图。 <br/>
+遍历一遍并不能解决所有问题，假如有一个listener中又修改了别的watch指定的数据，那么遍历一遍就不能显示最新的数据了。 <br/>
+因此，angular中设置了一个dirty变量，来表明数据中是否还有修改，在`$digest`中判断dirty如果一直为true的话，就需要一直循环，直到dirty为false。如果出现死循环的情况下，angular设置一个默认的循环次数**10次**，超过10次抛出异常，不再循环。 <br/>
+```javascript
+$scope.prototype.$$digestOnce = function() {
+  var dirty;
+  var list = this.$$watchList;
+
+  for (var i = 0; i < list.length; i++) {
+    var watch = list[i];
+    var newValue = watch.getNewValue(this); // this: $scope
+    var oldValue = watch.last; // 第一次是undefined
+    if(newValue !== oldValue) {
+      watch.listener(oldValue, newValue);
+      dirty = true; // 因为listener的操作，已经检查过的数据可能会变脏
+    }
+    watch.last = newValue;
+    return dirty;
+  }
+}
+
+$scope.prototype.$$digest = function() {
+  var dirty = true;
+  var checkTimes = 10;
+  while(dirty) {
+    dirty = this.$$digestOnce();
+    checkTimes++;
+    if (checkTimes > 10 && dirty) {
+      throw new Error("检测超过10次。");
+    }
+  }
+}
+```
+
+### 3. AngularJS中Controller之间如何通信
+1. 作用域嵌套，当前作用域中无法找到某个属性时，就会在父级作用域中进行查找，若找不到，一直向上找到`$rootScope`。
+2. `$broadcast`、`$emit`、`$on`。
+3. service单例模式。
+
+### 4. Angular中组件间通信方式
+
+
+
+
 
   
 
