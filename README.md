@@ -1895,7 +1895,7 @@ watch对象有三个属性 <br/>
 - listener：函数，当数据发生改变时需要执行的操作 <br/>
 `$watch`函数，接收以上三个属性，在内部创建watch对象，并且对象会被push到watchList中。  <br />
 3. `$digest`  <br/>
-遍历watchList，对比每个watch对象中指定的scope中的数据的值有没有变化，如果有的话，执行相应的listenre函数，更新视图。 <br/>
+遍历watchList，对比每个watch对象中指定的scope中的数据的值有没有变化，如果有的话，执行相应的listener函数，更新视图。 <br/>
 遍历一遍并不能解决所有问题，假如有一个listener中又修改了别的watch指定的数据，那么遍历一遍就不能显示最新的数据了。 <br/>
 因此，angular中设置了一个dirty变量，来表明数据中是否还有修改，在`$digest`中判断dirty如果一直为true的话，就需要一直循环，直到dirty为false。如果出现死循环的情况下，angular设置一个默认的循环次数**10次**，超过10次抛出异常，不再循环。 <br/>
 ```javascript
