@@ -1934,7 +1934,272 @@ $scope.prototype.$$digest = function() {
 2. `$broadcast`、`$emit`、`$on`。
 3. service单例模式。
 
+
 ### 4. Angular中组件间通信方式
+1. 子组件通过`@Input`获取父组件的数据和方法。
+（1）父组件调用子组件的时候传入数据。 <br>
+```html
+<app-child [msg]="msg" [run]="run"></app-child>
+```
+（2）子组件引入**Input模块**。 <br>
+```typescript
+import {Component, OnInit, Input} from "@angular/core";
+```
+（3）子组件中使用`@Input`装饰器接收父组件传过来的数据。 <br>
+```typescript
+export class ChildComponent implements OnInit {
+  @Input msg:string; // 声明接收：数据
+  @Input run:function; // 声明接收：方法
+
+  foo() {
+    console.log(this.msg);// 获取数据
+    this.run(); // 执行方法
+  }
+}
+```
+2. 父组件通过`@ViewChild`获取子组件的数据和方法。
+（1）父组件调用子组件的时候设置一个标记。 <br>
+```html
+<app-child #child></app-child>
+```
+（2）父组件中引入`@ViewChild`模块。 <br>
+```typescript
+import {Component, OnInit, ViewChild} from "@angular/core";
+export class ParentComponent implements OnInit {
+  @ViewChild child:any; // 子组件
+
+  foo() {
+    this.child.msg; // 获取子组件的数据
+    this.child.childMethod(); // 执行子组件的方法
+  }
+}
+```
+3. 子组件通过`@Output`触发父组件的方法。
+（1）子组件引入Output和EventEmitter。 <br>
+```typescript
+import {Component, OnInit, Input, Output, EventEmitter} from "@angular/core";
+```
+（2）子组件中实例化EventEmitter。 <br>
+```typescript
+@Output() private outer = new EventEmitter<string>();
+```
+（3）子组件通过EventEmitter对象outer广播数据。 <br>
+```typescript
+sentParent() {
+  this.outer.emit("data from child");
+}
+```
+（4）父组件调用子组件的时候，定义接收事件。 <br>
+```html
+<app-header (outer)="runParent($event)"></app-header>
+```
+（5）父组件接收到数据会调用自己的runParent方法，这个时候就能拿到子组件的数据。 <br>
+```typescript
+runParent(event) {
+  console.log(event); // event: 子组件给父组件广播的数据。
+}
+```
+4. 任意组件之间的通信方式。 <br>
+- 可使用localStorage。
+- service。 <br>
+（1）使用angular-cli创建service。 <br>
+```bash
+ng g service services/storage
+```
+生成src/app/services目录，该目录下会生成storage.service.ts文件。 <br>
+（2）`app.modules.ts`文件中引入并配置service。 <br>
+```typescript
+// 引入服务
+import {StorageService} from "./services/storage.service";
+
+@NgModule({
+  declarations: [
+    AppComponent,
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule
+  ],
+  providers: [
+    StorageService // 配置服务
+  ],
+  bootstrap: [
+    AppComponent
+  ]
+})
+export class AppModule {}
+```
+（3）完善storage.service.ts文件。 <br>
+```typescript
+import {Injectable} from "@angular/core";
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StorageService {
+  constructor() {}
+
+  set(key:string, value:any) {
+    // 使用localStorage做数据持久化
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  get(key:string) {
+    return JSON.parse(localStorage.getItem(key));
+  }
+}
+```
+（4）还需要在用到服务的组件中引入StorageService服务。 <br>
+```typescript
+import {StorageService} from "../../services/storage.service";
+
+export class SearchComponet implements OnInit {
+  constructor(public storage:StorageService) { // 注入service
+    console.log(this.storage.get('keyName')); // 调用service中的方法
+  }
+
+}
+```
+
+### 5. Rxjs异步数据流
+1. 使用方法类似Promise。
+```javascript
+import {Observable} from "rxjs";
+
+let stream = new Observable(observer => {
+  setTimeout(() => {
+    // 成功：返回数据，类似于Promise中的reslove函数
+    observer.next("observable timeout");
+
+    // 失败：类似于Promise中的reject函数
+    // observer.error("error msg");
+  }, 1000);
+});
+
+// 订阅数据，类似于Promise中的then函数
+stream.subscribe(value => console.log(value));
+```
+2. promise创建之后动作无法撤回，但Observable可以通过`unsubscribe()`撤回。
+```javascript
+// 订阅
+let timer = stream.subscribe(value => console.log(value));
+
+setTimeout(() => {
+  // 取消订阅
+  stream.unsubscribe(timer);
+}, 1000);
+```
+3. Rxjs订阅后可**多次执行**。
+```javascript
+// Promise版本
+let p = new Promise((resolve) => {
+  setInterval(() => {
+    resolve("data"); // 每隔1秒执行一次
+  }, 1000);
+});
+
+p.then(value => {
+  console.log(value); // 只能执行一次！！！
+});
+
+// Observable版本
+let stream = new Observable(observer => {
+  let count = 0;
+  setInterval(() => {
+    observer.next(count++); // 每隔1秒执行一次
+  }, 1000);
+})
+
+stream.subscribe(value => {
+  console.log(value); // 每隔1秒执行一次
+});
+```
+
+4. Rxjs的工具函数。
+（1） map <br>
+（2）filter <br>
+```javascript
+import {map, filter} from "rxjs/operators";
+
+let stream = new Observable(observer => {
+  let count = 0;
+  setInterval(() => {
+    observer.next(count++); // 每隔1秒执行一次
+  }, 1000);
+})
+
+stream
+  .pipe( // 管道
+    filter(value => value % 2 === 0),
+    map(value => value * value)
+  )
+  .subscribe(value => {
+    console.log(value); // 只输出偶数*偶数 4, 16, 36...
+  });
+```
+
+
+### 6. Angular请求数据。
+1. `app.module.ts`文件中引入`HttpClientModule`并注入。
+```javascript
+import {HttpClientModule} from "@angular/common/http";
+
+@NgModule({
+  declarations: [
+    AppComponent,
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule // 注入HttpClientModule
+  ],
+  providers: [
+    StorageService
+  ],
+  bootstrap: [
+    AppComponent
+  ]
+})
+export class AppModule {}
+```
+2. 在用到的地方引入HttpClient并在构造函数中声明。
+```javascript
+import {HttpClient} from "@angular/common/http";
+
+constructor(public http:HttpClient) {} // 注入
+```
+3. 发送get/post请求。
+```javascript
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+
+constructor(public http:HttpClient) {} // 注入
+
+ngOnInit() {
+  // get 请求
+  this.http
+    .get("http://xx.xx.xx.xx/api/getData")
+    .subscribe(response => {
+      console.log(response);
+    });
+}
+
+submit() {
+  // post 请求
+  this.http
+    .post("http://xx.xx.xx.xx/api/add", {
+      userName: "xxx",
+      age: 18
+    }, {
+      headers: new HttpHeaders({"Content-Type": "application/json"})
+    })
+    .subscribe(response => {
+      console.log(response);
+    });
+}
+```
+4. 引入`HttpClientJsonpModule`模块，使用`this.http.jsonp()`发送请求。
+
+
+
 
 
 
