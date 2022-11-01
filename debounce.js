@@ -10,6 +10,7 @@ function debounce(fn, timeout = 1000) {
     }
     timer = setTimeout(() => {
       fn.apply(context, arguments);
+      timer = null;
     }, timeout);
   }
 }
