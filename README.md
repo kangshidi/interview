@@ -1936,7 +1936,7 @@ $scope.prototype.$$digest = function() {
 
 
 ### 4. Angular中组件间通信方式
-1. 子组件通过`@Input`获取父组件的数据和方法。
+1. 子组件通过`@Input`获取父组件的数据和方法。 <br>
 （1）父组件调用子组件的时候传入数据。 <br>
 ```html
 <app-child [msg]="msg" [run]="run"></app-child>
@@ -1957,7 +1957,7 @@ export class ChildComponent implements OnInit {
   }
 }
 ```
-2. 父组件通过`@ViewChild`获取子组件的数据和方法。
+2. 父组件通过`@ViewChild`获取子组件的数据和方法。 <br>
 （1）父组件调用子组件的时候设置一个标记。 <br>
 ```html
 <app-child #child></app-child>
@@ -1974,7 +1974,7 @@ export class ParentComponent implements OnInit {
   }
 }
 ```
-3. 子组件通过`@Output`触发父组件的方法。
+3. 子组件通过`@Output`触发父组件的方法。 <br>
 （1）子组件引入Output和EventEmitter。 <br>
 ```typescript
 import {Component, OnInit, Input, Output, EventEmitter} from "@angular/core";
@@ -2000,7 +2000,7 @@ runParent(event) {
 }
 ```
 4. 任意组件之间的通信方式。 <br>
-- 可使用localStorage。
+- 可使用localStorage。 <br>
 - service。 <br>
 （1）使用angular-cli创建service。 <br>
 ```bash
@@ -2115,7 +2115,7 @@ stream.subscribe(value => {
 });
 ```
 
-4. Rxjs的工具函数。
+4. Rxjs的工具函数。 <br>
 （1） map <br>
 （2）filter <br>
 ```javascript
