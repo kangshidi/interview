@@ -2199,6 +2199,219 @@ submit() {
 4. 引入`HttpClientJsonpModule`模块，使用`this.http.jsonp()`发送请求。
 
 
+===================================================================
+# tiansu
+
+### 1. 常用的行内元素。
+1. 块记元素。
+- div
+- h1
+- p
+- form
+- table
+- ul
+- ol
+- hr
+2. 行内元素。
+- span
+- label
+- a
+- i
+- strong
+3. 行内块元素。
+- button
+- img
+- input
+- textarea
+- select
+
+### 2. 伪元素与伪类的区别。有哪些伪元素？使用场合。
+CSS引入伪类和伪元素概念是为了格式化文档树以外的信息。也就是说，伪类和伪元素是为了修饰不在文档树中的部分。<br>
+比如：一句话中的第一个字母或者列表中的第一个元素。<br>
+1. 伪类用于**当已有元素处于某个状态时**，为其添加对应的样式，这个状态是根据用户行为而动态变化的。比如：鼠标悬停，可以通过:hover来描述这个元素的状态。也就是说，只有处于**dom树无法描述的状态**下才能为元素添加样式。
+- :active
+- :checked
+- :disabled
+- :enabled
+- **:first-child**
+- **:last-child**
+- :focus
+- :hover
+2. 伪元素用于**创建不在文档树中的元素**，并为其添加样式。比如，我们可以通过::before在一个元素的前面增加一些文本，并添加样式。**虽然用户可以看到这些文本，但这些文本实际不在dom树中**。
+- ::after
+- ::before
+- **::first-letter**
+- **::first-line**
+- ::selection
+- ::placeholder
+
+### 3. 浏览器如何渲染页面的？
+1. 构建DOM树。如果遇到加载js，默认同步加载，会阻塞DOM树的创建。如果指定async/defer，则进行异步加载。js加载完成之后，默认要等CSSOM构建完成之后执行，因为js即可以修改DOM也可以修改CSSOM。
+2. 构建CSSOM。
+3. 构建render树。
+4. 页面布局。
+5. 页面绘制。
+
+### 4. 如何用CSS实现三角形？
+利用border实现。
+```html
+<style>
+.triangle {
+  width: 0;
+  height: 0;
+  border: 100px solid transparent;
+  border-bottom-color: red;
+}
+</style>
+
+<div class="triangle"></div>
+```
+
+### 5. WebP
+是一种同时提供了有损压缩和无损压缩的**图片文件格式**。同样的分辨率，大小比jpg、png小25%以上，大大提高网站的访问速度。
+
+### 6. 浏览器tab页之间通信方式有哪几种？
+1. 使用localStorage存储数据，同源页签之间可以通过监听`storage`事件来进行通信。
+```javascript
+// 其他页面使用localStorage.setItem("keyName")更新数据的时候，本页面会监听到值的变化。
+window.addEventListener("storage", (event) => {
+  // 打印变化的key名和最新的value值
+  console.log(event.key, event.newValue);
+});
+```
+2. cookie + setInterval 轮询
+3. web socket 服务器推送，建立长连接
+4. SharedWorker
+
+
+### 7. iframe里面能不能获取到外面页面的cookie？
+面试官说不能，我自己试了一下，好像是可以的啊，搞不懂。
+
+### 8. try里面return了，还会不会执行finally？内部实现原理
+
+### 9. Web安全
+1. XSS (Cross Scripting) 跨站脚本攻击
+- 过滤非法字符
+2. CSRF(Cross Site Request Forgery) 跨站请求伪造
+- 验证码
+- 验证请求头中的referer
+- anti CSRF token
+
+### 10. 海量数据处理 算法
+
+
+### 11. 说说比较有意思的项目，有什么亮点？
+
+
+### 12. 地址栏输入到页面渲染的流程
+1. 域名解析
+2. 建立tcp连接
+3. 发送http请求
+4. 服务端响应
+5. 客户端渲染
+
+### 13. tcp三次握手
+比如：A与B建立连接<br>
+A先发报文给B，B接收到之后，再发报文给A，这样A就能确定：B已经收到我发的东西。<br>
+那B怎么能确定它刚刚发的东西A有没有收到呢？所以A要再发一次报文给B，这样B就能确保：A已经收到了我发的东西。
+
+### 14. 小长方形变成大长方形，前70%变化的慢，后30%变化的快。css transition 具体怎么实现？
+`animation-timing-function`属性指定**动画的速度曲线**。 <br>
+- ease：指定从慢速开始，然后加快，然后缓慢结束的动画。（默认）
+- linear：规定从开始到结束的**速度相同**的动画。
+- ease-in：规定慢速开始的动画。
+- ease-out：规定慢速结束的动画。
+- ease-in-out：指定开始和结束较慢的动画。
+- cubic-bezier(n, n, n, n)：运行在三次贝塞尔函数中定义的自己的值。
+```html
+  <style>
+    .effect {
+      width: 100px;
+      height: 30px;
+      background-color: red;
+      animation-name: change;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+    }
+    @keyframes change {
+      from {
+        width: 100px;
+      }
+      to {
+        width: 150px;
+      }
+    }
+  </style>
+  <div class="effect"></div>
+```
+
+### 15. vue 组件通信
+1. 父子组件通信：props
+2. 任意组件通信
+- 全局事件总线
+- 消息订阅与发布的插件，比如：pubsub.js
+- vuex 集中式状态管理
+
+### 16. vue 双向数据绑定
+1. vue2中`Object.definePropoty`
+2. vue3中`Proxy`和`Reflect`
+
+### 17. es6的新特性
+1. let/const
+2. 箭头函数
+3. 扩展运算符
+4. 解构赋值
+5. Set/Map
+6. Promise
+7. async/await
+8. Proxy
+9. Class
+10. export/import
+
+
+### 18. @import 和 link引入css的区别
+1. link是html标签，不仅可以进入css文件，也可以引入其他类型的文件。`@import`是css的语法，只能引入css文件。
+2. 兼容性：link没有兼容性问题；`@import`在IE5之前不支持。
+3. 加载顺序：页面加载的同时会加载link；**而`@import`引入的css会等到页面被加载完再加载**，所以在网速慢的情况下，会出现一开始没有css样式，闪烁一下出现样式的问题。
+
+### 19. 如何优化首屏加载时间
+1. 减少HTTP请求。
+2. 压缩图片。
+3. CDN加速。
+4. gzip。
+5. 浏览器缓存。
+6. webpack （TreeShaking/按需加载）
+
+### 20. js中的异步处理有哪些？
+1. 回调函数。
+2. 事件监听。
+3. 定时器。
+4. Promise。
+
+### 21. 域名解析干了啥？
+域名 => IP地址
+
+### 22. 闭包
+### 23. 回流和重绘
+
+### 24. 浏览器的垃圾回收机制
+1. **引用计数** <br>
+JS引擎每隔一段时间，检查一下**堆内存中对象的被引入次数**，如果为0的话，就释放该对象。<br>
+解决：
+- 被遗忘的定时器和回调函数。 解决：及时clear setTimeout setInterval。
+- 没有清理DOM元素引用。 解决：及时赋值null。
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
