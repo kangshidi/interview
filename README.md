@@ -2405,6 +2405,98 @@ JS引擎每隔一段时间，检查一下**堆内存中对象的被引入次数*
 
 
 
+# 其他
+
+### 1. vue和angular的区别
+1. 相同点
+- 都支持**指令**
+- 都支持**过滤器**
+- 都是**双向数据绑定**
+- 不支持低版本的浏览器
+2. 不同点
+- angular学习成本高，vue容易上手
+- angular脏检查机制，watch比较多，在某些场景下性能可能不如vue。vue使用数据劫持实现双向数据绑定，独立触发视图的更新。
+
+
+### 2. 文件或者blob转base64
+```javascript
+// 预览上传的图片
+function previewFile() {
+  var preview = document.querySelector('img');
+  var file = document.querySelector('input[type=file]').files[0];
+
+  var reader = new FileReader();
+  reader.addEventListener('load', function() {
+    // 使用base64显示图片，格式如下：
+    // data:image/jpeg;base64,......
+    preview.src = reader.result;
+  });
+
+  if (file) {
+    /*
+      readAsDataURL 方法会读取指定的 Blob 或 File 对象。
+      读取操作完成的时候，readyState 会变成已完成DONE，并触发 loadend 事件，
+      同时 result 属性将包含一个data:URL 格式的字符串（base64 编码）以表示所读取文件的内容。
+    */
+    reader.readAsDataURL(file);
+  }
+}
+```
+
+### 3. H5地理定位
+```javascript
+// geolocation在navigator对象上
+navigator.geolocation.getCurrentPosition(position => {
+  console.log(position.coords.latitude, position.coords.longitude);
+});
+```
+
+### 4. requestAnimationFrame
+```javascript
+  // 用法和功效都类似setTimeout。
+  // 但setTimeout的时间需要程序员指定，
+  // requestAnimationFrame不需要指定间隔时间，以系统间隔时间为准。
+  // 浏览器每隔一秒刷新页面60次，所以requestAnimationFrame执行的默认间隔时间为：1000/60=16.67ms
+  requestAnimationFrame((timestamp) => {
+    // timestamp为执行回调函数时performance.now()的值
+    console.log(timestamp);
+  });
+
+  // 上面的代码相当于
+  setTimeout(() => {console.log('xxx')}, 16.7);
+```
+
+### 5. Canvas裁剪图片
+```javascript
+  // 注意要在http协议上展示页面，否则toDataURL方法无法使用，会有跨域问题。
+  window.onload = function() {
+    var c = document.querySelector("#xxx");
+    var ctx = c.getContext("2d");
+
+    var imgBefore = document.querySelector("#before");
+    // imgBefore.crossOrigin = "anonymous";
+    ctx.drawImage(imgBefore, 250, 250, 150, 150, 0, 0, 150, 150); // 裁剪图片在画布上展示
+
+    var imgAfter = document.querySelector("#after");
+    // imgAfter.crossOrigin = "anonymous";
+    // 将裁剪后的图片使用base64展示，注意toDataURL是canvas对象上的方法，不是context上的。
+    imgAfter.src = c.toDataURL();
+  };
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
