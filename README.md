@@ -2486,6 +2486,212 @@ navigator.geolocation.getCurrentPosition(position => {
 
 
 
+# yongzhong1
+
+### 1. 设计模式
+自己如何实现消息订阅与发布模式？
+
+### 2. V8引擎垃圾回收
+1. 内存大小　 <br/>
+V8引擎默认占用**1.4G内存**，可以扩展。 <br/>
+64位OS：新生代64M，老生代1400M <br/>
+32位OS：新生代32M，老生代700M <br/>
+
+2. 垃圾回收算法 <br/>
+（1）**新生代**算法：`Copy（复制） Scavenge（新生代互换）` <br/>
+`Semi space From <=> Semi space To` <br/>
+from空间和to空间各占内存32M。 <br/>
+变量先一个一个存在from空间中，其中有一些可能已经不用了，但是内存中并没有删除，只是做了标记。当from空间使用的一定程度时，发现不够用了，启动垃圾回收机制，将仍然使用的变量和新的要存储的变量一起copy到to空间中，清空原有from空间的内存。随后，to空间改为from空间，原来的from空间改为to空间。注意，通常情况下，新生代总有一半的内存空间是不被使用的。 <br/>
+- 为什么新生代要采用复制互换的形式？ <br/>
+新生代占用内存空间比较小，采用空间换时间，来降低时间复杂度，因为copy效率非常高。 <br/>
+- 为什么老生代不采用复制互换的形式？ <br/>
+老生代占用内存空间比较大，浪费700M非常不划算。 <br/> <br/>
+
+（2）**老生代**算法：`标记整理清除: Mark-Sweep（标记清除）、Mark-Compact（标记整理）` <br/>
+有一个GC root节点，所有的变量都会被这个根节点引用。 <br/>
+- 标记清除： <br/>
+采用**广度扫描**对每一个变量进行标记，有用的变量和垃圾变量，然后进行垃圾清除。 <br/>
+- 标记整理： <br/>
+先**广度扫描**进行标记，然后将有用的变量移动到**连续的位置**，最后再清除垃圾。 <br/>
+- 为什么要**先整理再清除**？ <br/>
+因为整理的过程中，会将一些垃圾变量覆盖掉，这样最后要清除的垃圾就会变少。 <br/>
+- 为什么**需要连续的内存空间**？ <br/>
+碎片整理，腾出大空间。（例如：大数组等连续空间） <br/> <br/>
+
+早期V8引擎采用：**全停顿标记** <br/>
+现在V8引擎采用：**增量标记&三色标记法** 线程切换（执行主线程代码和垃圾回收）的更加频繁，每次标记需要的时间更短，页面渲染运行更加流畅。<br/> <br/>
+
+（3）新生代如何晋升为老生代？ <br/>
+是否经历过一次scavenge回收？没有的话，互换位置。 <br/>
+经历过的话，semi space to空间是否已经使用了25%？ <br/>
+不是的话，互换位置。 <br/>
+是的话，晋升为老生代。 <br/>
+
+（4）如何查看内存使用情况？ <br/>
+- node：`process.memoryUsage()` <br/>
+- 浏览器：`window.performance.memory` <br/>
+
+（5）node执行的时候可以通过指定选项`--max-old-space-size=4096`来增大V8引擎的内存空间限制（node中V8引擎默认占用空间最大是2G）。 <br/>
+```shell
+node --max-old-space-size=4096 test.js
+```
+
+### 3. 二分查找
+**有序列表**，跟数组中间的值比较。
+
+### 4. vue数据劫持 依赖收集
+数据劫持： `Object.defineProperty`
+依赖收集：<br>
+在getter中进行依赖收集，当依赖的数据被设置时，setter能获得通知，告诉render函数进行重新计算。<br>
+在setter中进行notify动作，在getter中进行addObserver动作。<br>
+
+1. 角色<br>
+Vue源码中实现依赖收集有三个类：<br>
+- **Dep类：观察目标**，每一个数据都有一个Dep实例对象，内部有一个subs队列，保存依赖本数据的观察者，当本数据变更时，调用`dep.notify()`通知观察者。<br>
+- **Watcher类：观察者**，进行观察者函数的包装处理。如render函数会被包装成一个Watcher实例对象。**视图、计算属性、侦听器等都是Watcher**。<br>
+- **Observer类：辅助的可观测类**，数组/对象通过它的转化，成为可观测数据。<br>
+2. **每一个数据都有一个Dep实例对象。**<br>
+访问`Dep.target`就能知道当前的观察者是谁。在后续的依赖收集中，getter中会调用`dep.depend()`,setter中会调用`dep.notify()`。
+3. 将Observer类的实例挂在在`__ob__`属性上。<br>
+4. 如何观测对象和数组的变化？<br>
+- 对象：`Object.defineProperty()`
+- 数组：Array的方法 shift,unshift,push,pop,splice,reverse,sort等等
+5. Watcher
+
+### 5. promise与async await的区别
+### 6. 闭包引起的内存泄漏，还有哪些操作回引起内存泄漏？
+### 7. 事件循环Event Loop（宏任务和微任务）
+
+
+# yongzhong2
+### 1. react性能优化，精准更新。
+```javascript
+import React from "react";
+import Foo from "./components/Foo";
+
+// React默认的情况下，不管子组件有没有使用到父组件的数据，只要父组件重新render，子组件必定会重新渲染。
+// React.memo()：检查组件所依赖的数据是否有变化，没变化的情况下，不会重新渲染。
+// React.memo()是高阶组件，传入一个组件，返回一个组件。
+const PureFoo = React.memo(Foo);
+
+function App() {
+  const [time, setTime] = React.useState(Date.now());
+
+  const [base, setBase] = React.useState("base");
+  // 页面每次渲染的时候，都会重新执行以下语句，导致data每次都是一个新的引用地址，从而会引发PureFoo组件的重新渲染。
+  // const data = {base};
+  // React.useMemo()函数会缓存data数据，这样页面重新渲染app组件的时候，不会重新执行上一行代码。
+  const data = React.useMemo(() => ({base}), [base]);
+
+  // 函数也是一个引用类型，所以页面每次渲染的时候，都会重新执行如下语句，导致每次bar的值都指向一个新的地址，从而引发PureFoo组件的重新渲染。
+  // const bar = () => {
+  //   console.log("bar function");
+  // };
+  // 可以使用useMemo返回一个函数的方式，缓存函数。
+  // const bar = React.useMemo(() => {
+  //   return () => {
+  //     console.log("bar function");
+  //   }
+  // }, []);
+  // React.useCallback()函数是useMemo的语法糖，专门缓存函数的，比较简洁。
+  const bar = React.useCallback(() => {
+    console.log("bar function");
+  }, []);
+
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setTime(Date.now());
+    }, 1000);
+  }, [time]);
+
+  return (
+    <div>
+      <h1>App组件</h1>
+      <b style={{color: "red"}}>{time}</b>
+      <PureFoo data={data} func={bar}/>
+    </div>
+  );
+}
+
+export default App;
+```
+
+### 2. 用过的webpack插件和loader有哪些？
+1. plugins
+- `ESLintPlugin`
+- `HtmlWebpackPlugin`：以指定的html文件为模版，创建一个新的html文件，并自动引入打包后的资源。
+- `MiniCssExtractPlugin`：替换style-loader，提取css到单独的文件，通过link标签引入 。
+- `CssMinimizerPlugin`：压缩css文件。
+- `TerserWebpackPlugin`：压缩js文件。
+2. loaders，loader的执行顺序，**从右到左**。
+- style-loaer：将js中的css资源通过创建style标签的形式添加到html文件中。
+- css-loader：将css资源编译成commonJS模块到js文件中。
+- less-loader：将less编译成css。
+- sass-loader：将sass/scss编译成css。
+- webpack内置的Asset Modules可以加载图片、音频、视频、字体等资源。可以将图片转成base64。
+- thread-loader：多线程打包。
+- babel-loader：es6转es5。
+
+### 3. promise伪代码
+```javascript
+  // 同时发请求a和b。
+  // a：有可能2秒内返回，也有可能大于2秒返回。
+  // b：一定在2秒内返回。
+  // 需求：a在2秒内返回的时候，就使用a的值。a大于2秒返回的时候，就使用b的值。
+  const a = new Promise((resolve, reject) => {
+    setTimeout(resolve, 500, "a");
+  });
+  const b = new Promise((resolve, reject) => {
+    setTimeout(resolve, 1000, "b");
+  });
+  const timer = new Promise((resolve, reject) => {
+    setTimeout(resolve, 2000, "timer");
+  });
+  Promise.race([a, timer]).then(value => {
+    if (value === "timer") {
+      // a大于2秒返回的，舍弃
+      // 使用b的数据
+      b.then(data => {
+        console.log("使用B: ", data);
+      })
+    } else {
+      // a小于2秒返回的
+      // 使用A的返回值
+      console.log("使用A: ", value);
+    }
+  });
+```
+
+### 4. 用过哪些调试工具？
+### 5. 如何性能优化？
+1. 减少请求
+2. 加快渲染
+### 6. web安全
+### 7. 组件划分的粒度
+layout组件，功能组件
+### 8. 如何减少内存的使用？
+### 9. 鼠标有哪些事件？
+### 10. 如何自己实现鼠标双击的事件？
+### 11. 事件捕捉，事件冒泡，如何阻止冒泡？
+最高冒到document。
+### 12. f12中缓存数据在哪里看到？除了缓存还有什么东西？
+Application页签
+### 13. get与post的区别？application/json和form-url-encoded有什么区别？
+1. form-data形式：key1=value1&key2=value2
+2. application/json形式：request payload：json字符串（浏览器中可parse成json对象以方便查看）
+### 14. 有没有调试过内存相关的东西？
+window.performance.memory
+### 15. 项目中有没有遇到什么问题？都是怎么解决的？
+
+
+
+
+
+
+
+
+
 
 
 
