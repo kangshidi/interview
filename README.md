@@ -479,7 +479,42 @@ module3.foo();
 （1）如果有，先执行微任务。 <br>
 （2）如果没有，按照宏队列里面任务的顺序，依次执行。 <br>
 
+### 27. ES6中的class
+```javascript
+  class Person {
+    constructor(name, age) {
+      // 该属性存在于每一个Person的实例对象上
+      this.name = name;
+      this.age = age;
+    }
 
+    // 采用赋值的方式初始化属性：该属性存在于每一个Person的实例对象上
+    school = "西北大学";
+
+    // 该方法存在于Person类的原型对象上，供Person实例对象调用
+    // 使用Person实例对象调用的时候，函数内的this指向调用它的实例
+    eat() {
+      // 注意：类的内部使用了局部的严格模式： use strict
+      // 所以直接执行该函数，this为undefined
+      console.log("--- eat", this);
+    }
+
+    // 采用赋值的方式定义函数：该函数存在于每一个Person的实例对象
+    sayHello = () => {
+      console.log("--- sayHello", this);
+    };
+  }
+
+  const p = new Person("tony", 18);
+  console.log(p);
+  p.eat();
+  p.sayHello();
+
+  // e为一个引用地址，指向p原型对象上面的eat方法，并未执行
+  const e = p.eat;
+  // 直接执行eat方法，并没有使用实例对象执行，所以this为undefined
+  e();
+```
 
 # Vue部分
 ### 1.MVVM
