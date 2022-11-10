@@ -2581,6 +2581,7 @@ function App() {
   // 页面每次渲染的时候，都会重新执行以下语句，导致data每次都是一个新的引用地址，从而会引发PureFoo组件的重新渲染。
   // const data = {base};
   // React.useMemo()函数会缓存data数据，这样页面重新渲染app组件的时候，不会重新执行上一行代码。
+  // 只有data依赖的base变量的值更新了，才会重新赋值data数据。
   const data = React.useMemo(() => ({base}), [base]);
 
   // 函数也是一个引用类型，所以页面每次渲染的时候，都会重新执行如下语句，导致每次bar的值都指向一个新的地址，从而引发PureFoo组件的重新渲染。
