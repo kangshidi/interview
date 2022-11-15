@@ -2722,6 +2722,110 @@ window.performance.memory
 
 
 
+# huatai
+
+### 1. 项目中的难点，如何克服困难的。
+
+### 2. 防抖和节流的原理以及应用场景。
+1. 防抖：事件在规定的时间间隔内多次触发的话，重新计时，回调只会执行1次，以最后一次触发为准。 <br>
+使用场景：
+- 用户在input框中输入数据进行搜索，边输入边下发请求时。
+- 窗口大小resize，只需要窗口大小调整完成后再进行后续操作时。
+- 登陆或者发短信等按钮，避免用户点击太快，以至于下发了多次请求时。
+
+2. 节流：当多次执行某一动作的时候，每间隔一段时间，只执行一次。 <br>
+使用场景：
+- 滚动加载，滚到底部监听，window.onscroll等事件
+- 搜索联想
+
+### 3. setTimeout第二个参数是时间，假如是0ms的话，是立即执行吗？
+
+### 4. 宏任务有哪些？微任务有哪些？
+
+### 5. sass的优点
+1. 嵌套（有什么好处？ 书写方便 + 写在一起好维护）
+2. 变量
+
+### 6. css如何实现水平居中，垂直居中。
+
+### 7. 如何清除浮动。
+
+### 8. vue，angular，react使用感受
+
+### 9. vue中data一般是函数还是对象？什么场景下可以写成对象的形式？
+他的意思可能是有需要复用的数据的时候，data可以写成对象的形式。一般情况下还是写成函数的形式。
+
+### 10. vue的双向数据绑定
+
+### 11. git平时怎么管理的。
+
+### 12. 性能优化。
+
+### 13. webpack的常用配置项，loader和plugins。
+1. entry：字符串
+2. output：对象
+3. module/rules：对象数组
+4. plugins：数组
+5. mode：字符串
+6. optimization：对象（仅生产模式）
+7. devtool：字符串
+8. devServer：对象（仅开发模式）
+
+### 14. React中常用的hook函数。
+1. useState
+2. useEffect
+3. useMemo
+4. useCallback
+5. useRef
+6. React.memo
+
+### 15. React中的PureCompnent原理。
+shouldComponentUpdate
+
+### 16. **并发两个请求**，等待两个请求全部返回时再处理数据，如何用Promise实现？
+### 17. 如何确定Promise.all返回的数据是哪一个请求返回的？
+```javascript
+// [dataA, dataB]：数组的解构赋值
+Promise.all([promiseA, promiseB]).then([dataA, dataB]) => {
+
+})
+```
+
+async/await是先发一个请求，等请求返回，再发另一个请求，类似同步的，而**不是并发请求**。
+```javascript
+  const funA = () => {
+    console.log("--- 111");
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, 1000, "aaa");
+    });
+  }
+  const funB = () => {
+    console.log("--- 222");
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, 1000, "bbb");
+    });
+  }
+
+  const foo = async () => {
+    // 等funA执行完了再执行funB，类似同步，而非并发
+    const dataA = await funA();
+    const dataB = await funB();
+
+    return {
+      dataA,
+      dataB
+    }
+  }
+
+  foo().then(data => {
+    console.log(data);
+  });
+```
+
+### 18. 箭头函数和普通函数的区别。
+
+### 19. 有没有遇到到深拷贝的问题，怎样解决。
+
 
 
 
