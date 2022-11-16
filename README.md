@@ -1489,11 +1489,15 @@ this.context // 读取context中的value数据
 ```javascript
 React.useEffect(() => {
   // todo 添加副作用操作
-  return () => {
-    // todo 添加收尾工作，比如取消订阅、清除定时器
+  const timer = setInterval(() => {}, 1000);
+  return () => { // 该函数会在组件卸载之前自动被react调用
+    // todo 添加收尾工作，比如取消订阅、清除定时器  ==> componentWillUnmount
+    clearInterval(timer);
   }
-}, [stateValue]) // 如果指定的是空数组[]，回调函数只会在第一次render()后执行
-// 第二个参数如果指定state中的变量，则会监测该变量的变化，变化一次，执行一次。
+}, [stateValue]) 
+// 第二个参数，如果指定的是空数组[]，回调函数只会在第一次render()后执行  ==> componentDidMount
+// 第二个参数，如果指定state中的变量，则会监测该变量的变化，变化一次，执行一次。 ==> componentDidUpdate
+// 第二个参数，如果不传，回调函数在第一次render的时候执行，并且以后所有变量每次变化的时候都执行。 ==> componentDidMount + componentDidUpdate
 ```
 4. 可以把useEffect Hook看作如下三个函数的组合
 - componentDidMount
